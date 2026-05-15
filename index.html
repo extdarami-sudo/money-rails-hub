@@ -201,6 +201,11 @@ h1 {
 }
 .filter-btn.active { border-color: var(--fg); background: var(--fg); color: #fff; }
 .filter-btn:not(.active):hover { border-color: var(--dim); background: var(--card); }
+.filter-sep { width: 1px; height: 20px; background: var(--dim); margin: 0 4px; }
+.filter-dot { width: 6px; height: 6px; border-radius: 9999px; display: inline-block; margin-right: 5px; vertical-align: middle; }
+.dot-live  { background: #00A650; }
+.dot-dev   { background: #FFB800; }
+.dot-pilot { background: #434CE4; }
 
 /* Decorative train rail */
 .train-strip {
@@ -365,6 +370,10 @@ footer {
         <button class="filter-btn" onclick="setFilter('ci',this)">CI</button>
         <button class="filter-btn" onclick="setFilter('co',this)">CO</button>
         <button class="filter-btn" onclick="setFilter('campanas',this)">Campañas</button>
+        <span class="filter-sep"></span>
+        <button class="filter-btn filter-status" onclick="setFilter('live',this)"><span class="filter-dot dot-live"></span>En vivo</button>
+        <button class="filter-btn filter-status" onclick="setFilter('dev',this)"><span class="filter-dot dot-dev"></span>En desarrollo</button>
+        <button class="filter-btn filter-status" onclick="setFilter('pilot',this)"><span class="filter-dot dot-pilot"></span>En pilot</button>
       </div>
     </div>
 
@@ -432,41 +441,6 @@ const DASHBOARDS = [
     status: 'live', statusLabel: 'En vivo', quarter: 'Q1 26',
     url: 'https://grid.adminml.com/d/01KRMD8V61CBZ7HQM07YA5RW0M/view',
     motif: 'atm',
-  },
-  {
-    id: 'nps', pillar: 'exp', tags: ['ci','co'], added: '2026-01-20',
-    title: 'NPS de la red',
-    desc: 'NPS de Cash-in/out por producto, semana y región. Picos por lanzamientos y deprecaciones.',
-    status: 'live', statusLabel: 'En vivo', quarter: 'Continuo',
-    url: null, motif: 'smile',
-  },
-  {
-    id: 'campaigns', pillar: 'aware', tags: ['campanas'], added: '2026-02-01',
-    title: 'Campañas de awareness',
-    desc: 'Performance de campañas in-app y externas: CVR, CAC, retención M0/M1 y journeys automatizados.',
-    status: 'live', statusLabel: 'En vivo', quarter: 'Continuo',
-    url: null, motif: 'megaphone',
-  },
-  {
-    id: 'economics', pillar: 'econ', tags: ['ci','co'], added: '2026-03-01',
-    title: 'Economics & costos',
-    desc: 'Costo por transacción por agregador, ahorro estimado por conexión directa y renegociaciones.',
-    status: 'live', statusLabel: 'En vivo', quarter: 'Continuo',
-    url: null, motif: 'coins',
-  },
-  {
-    id: 'red-3b', pillar: 'capi', tags: ['ci','co'], added: '2026-04-01',
-    title: 'Tiendas 3B — conexión',
-    desc: 'Roadmap regulatorio + técnico + legal para CI/CO en 3B. Hitos por área y +3,100 bocas proyectadas.',
-    status: 'pilot', statusLabel: 'En pilot', quarter: 'Q4 26',
-    url: null, motif: 'shop',
-  },
-  {
-    id: 'oxxo-ci', pillar: 'exp', tags: ['ci'], added: '2026-05-01',
-    title: 'Oxxo Cash-in',
-    desc: 'Ingreso de efectivo en Oxxo vía tarjeta digital. Tracking de pre-encendido, conexión directa y rollout.',
-    status: 'dev', statusLabel: 'En desarrollo', quarter: 'Q3 26',
-    url: null, motif: 'oxxo',
   },
 ];
 
@@ -582,8 +556,13 @@ const PAGE_SIZE = 6;
 let currentFilter = 'todos';
 let currentPage   = 1;
 
+const STATUS_FILTERS = new Set(['live', 'dev', 'pilot']);
+
 function filteredSorted(filter) {
-  const list = filter === 'todos' ? DASHBOARDS : DASHBOARDS.filter(d => d.tags.includes(filter));
+  let list;
+  if (filter === 'todos')               list = DASHBOARDS;
+  else if (STATUS_FILTERS.has(filter))  list = DASHBOARDS.filter(d => d.status === filter);
+  else                                  list = DASHBOARDS.filter(d => d.tags.includes(filter));
   return [...list].sort((a, b) => new Date(b.added) - new Date(a.added));
 }
 
