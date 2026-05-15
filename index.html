@@ -9,316 +9,310 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
-  --accent:       #3483FA;
-  --accent-tint:  #3483FA1F;
-  --capi:         #434CE4;
-  --exp:          #7A3FEB;
-  --aware:        #F23D4F;
-  --econ:         #00A650;
-  --bg:           #FBFAF6;
-  --card:         #FFFFFF;
-  --border:       #1A1A1A;
-  --border-light: #EEEEEE;
-  --fg:           #1A1A1A;
-  --fg2:          #666666;
-  --fg3:          #999999;
-  --positive:     #00A650;
-  --negative:     #F23D4F;
-  --caution:      #FFB800;
-  --font:         'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --accent: #3483FA;
+  --capi:   #434CE4;
+  --exp:    #7A3FEB;
+  --aware:  #F23D4F;
+  --econ:   #00A650;
+  --bg:     #FBFAF6;
+  --card:   #FFFFFF;
+  --border: #1A1A1A;
+  --dim:    #EEEEEE;
+  --fg:     #1A1A1A;
+  --fg2:    #666666;
+  --fg3:    #999999;
+  --font:   'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { background: var(--bg); font-family: var(--font); color: var(--fg); -webkit-font-smoothing: antialiased; }
+
+html, body {
+  min-height: 100%;
+  background: var(--bg);
+  font-family: var(--font);
+  color: var(--fg);
+  -webkit-font-smoothing: antialiased;
+}
+
 a { color: inherit; text-decoration: none; }
 
-/* ── LAYOUT ── */
-.page { max-width: 1280px; margin: 0 auto; position: relative; overflow: hidden; }
-
-/* ── BG SHAPES ── */
+/* Full-viewport background blobs — fixed so they bleed past the centered content */
 .bg-blob {
-  position: absolute; border-radius: 9999px; pointer-events: none; z-index: 0;
+  position: fixed; border-radius: 9999px; pointer-events: none; z-index: 0;
 }
 .bg-blob-1 {
-  left: -120px; top: 280px; width: 360px; height: 360px;
+  left: -60px; top: 240px; width: 400px; height: 400px;
   background: radial-gradient(circle, rgba(67,76,228,0.07), transparent 70%);
   animation: drift1 18s ease-in-out infinite;
 }
 .bg-blob-2 {
-  right: -100px; top: 520px; width: 340px; height: 340px;
-  background: radial-gradient(circle, rgba(255,230,0,0.16), transparent 70%);
+  right: -60px; top: 480px; width: 380px; height: 380px;
+  background: radial-gradient(circle, rgba(255,230,0,0.18), transparent 70%);
   animation: drift2 22s ease-in-out infinite;
 }
 @keyframes drift1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(30px,-20px)} }
 @keyframes drift2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-30px,20px)} }
 
-/* ── HEADER ── */
+/* Content wrapper — centered, no overflow clipping */
+.page { max-width: 1280px; margin: 0 auto; position: relative; z-index: 1; }
+
+/* ── HEADER ─────────────────────────────────────────────────────────────── */
 header {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 24px 56px 0; position: relative; z-index: 2;
+  padding: 28px 56px;
 }
-.logo { display: flex; align-items: center; gap: 18px; }
+.logo { display: flex; align-items: center; gap: 16px; }
 .logo-chip {
-  width: 28px; height: 28px; border-radius: 8px; background: #FFE600;
-  display: grid; place-items: center; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06);
-  flex-shrink: 0;
+  width: 30px; height: 30px; border-radius: 8px; background: #FFE600;
+  display: grid; place-items: center; flex-shrink: 0;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06);
 }
-.logo-name { font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
-.logo-divider { width: 1px; height: 22px; background: #EEEEEE; }
+.logo-divider { width: 1px; height: 22px; background: var(--dim); }
 .logo-hub { font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
-nav { display: flex; gap: 28px; align-items: center; }
+nav { display: flex; gap: 28px; }
 nav a { font-size: 13px; font-weight: 500; color: var(--fg2); transition: color 150ms; }
 nav a:hover { color: var(--fg); }
 
-/* ── HERO ── */
+/* ── HERO ────────────────────────────────────────────────────────────────── */
 .hero {
-  padding: 48px 56px 36px; position: relative; z-index: 1;
   display: flex; align-items: flex-start; justify-content: space-between;
-  min-height: 320px;
+  padding: 48px 56px 52px; gap: 48px;
 }
-.hero-text { max-width: 560px; }
+.hero-text { max-width: 560px; flex-shrink: 0; }
 .hero-eyebrow {
-  display: flex; align-items: baseline; gap: 10px; margin-bottom: 18px;
+  display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
 }
 .hero-eyebrow-label {
   font-size: 12px; font-weight: 700; letter-spacing: 0.12em;
   text-transform: uppercase; color: var(--accent);
 }
-.hero-eyebrow-line { width: 28px; height: 1px; background: var(--accent); display: inline-block; }
+.hero-eyebrow-line { width: 28px; height: 1px; background: var(--accent); }
 .hero-eyebrow-date { font-size: 12px; color: var(--fg3); }
-.hero-title {
-  font-size: 88px; line-height: 1; font-weight: 800;
-  letter-spacing: -0.04em; text-transform: lowercase; color: var(--fg);
+h1 {
+  font-size: clamp(56px, 6.875vw, 88px); line-height: 1;
+  font-weight: 800; letter-spacing: -0.04em; text-transform: lowercase;
 }
-.hero-title-accent { color: var(--accent); }
-.hero-title-sep { color: var(--fg3); font-weight: 600; }
-.hero-sub {
-  font-size: 16px; line-height: 1.5; color: var(--fg2); margin-top: 20px;
-}
+.h1-sep    { color: var(--fg3); font-weight: 600; }
+.h1-accent { color: var(--accent); }
+.hero-sub { font-size: 16px; line-height: 1.5; color: var(--fg2); margin-top: 20px; }
 .hero-gif {
-  position: absolute; right: 80px; top: 40px;
+  flex-shrink: 0; align-self: center;
   animation: bob 3.4s ease-in-out infinite;
 }
-.hero-gif img { display: block; width: 220px; height: auto; }
+.hero-gif img { display: block; width: clamp(160px, 17vw, 230px); height: auto; }
 @keyframes bob {
   0%,100% { transform: translateY(0); }
-  50%      { transform: translateY(-12px); }
+  50%      { transform: translateY(-14px); }
 }
 
-/* ── ROADMAP ── */
-.roadmap { padding: 8px 56px 56px; position: relative; z-index: 1; }
+/* ── ROADMAP ─────────────────────────────────────────────────────────────── */
+.section { padding: 8px 56px 56px; }
 .section-header {
-  display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 18px;
+  display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 20px;
 }
 .section-title {
-  font-size: 36px; font-weight: 800; letter-spacing: -0.02em; text-transform: lowercase;
+  font-size: clamp(28px, 2.8vw, 36px); font-weight: 800;
+  letter-spacing: -0.02em; text-transform: lowercase;
 }
 .section-title-muted { color: var(--fg3); font-weight: 600; }
 .section-meta { font-size: 12px; color: var(--fg3); }
 
-.roadmap-card {
+.rmap-card {
   background: var(--card); border: 1.5px solid var(--border);
   border-radius: 18px; padding: 20px 24px 28px; position: relative;
+  overflow: visible;
 }
-.roadmap-week-header {
-  display: flex; padding-left: 130px; padding-bottom: 10px;
+.rmap-week-row {
+  display: flex; padding-left: 130px; padding-bottom: 12px;
   position: relative; z-index: 1;
 }
-.roadmap-week-cell { flex: 1; position: relative; }
-.roadmap-week-month {
+.rmap-week-cell { flex: 1; position: relative; }
+.rmap-month-label {
   position: absolute; top: -14px; left: 0;
   font-size: 10px; font-weight: 800; letter-spacing: 0.08em;
   text-transform: uppercase; color: var(--fg3);
 }
-.roadmap-week-day {
-  font-size: 12px; font-weight: 700; color: var(--fg2);
-  font-variant-numeric: tabular-nums;
-}
-.roadmap-week-day.today { color: var(--fg); }
+.rmap-day { font-size: 12px; font-weight: 700; color: var(--fg2); font-variant-numeric: tabular-nums; }
+.rmap-day.is-today { color: var(--fg); }
 
-.roadmap-grid-lines {
+.rmap-grid-lines {
   position: absolute; left: calc(24px + 130px); right: 24px;
-  top: 32px; bottom: 28px; display: flex; pointer-events: none;
+  top: 32px; bottom: 28px; display: flex; pointer-events: none; z-index: 0;
 }
-.roadmap-grid-line { flex: 1; border-left: 1px dashed #EEEEEE; }
-.roadmap-grid-line:first-child { border-left: none; }
+.rmap-grid-line { flex: 1; border-left: 1px dashed var(--dim); }
+.rmap-grid-line:first-child { border-left: none; }
 
-.roadmap-now {
-  position: absolute; top: 28px; bottom: 28px;
-  width: 0; border-left: 2px dashed rgba(26,26,26,0.45);
-  pointer-events: none; z-index: 3;
+.rmap-now {
+  position: absolute; top: 28px; bottom: 28px; width: 0;
+  border-left: 2px dashed rgba(26,26,26,0.4);
+  pointer-events: none; z-index: 4;
 }
-.roadmap-now-chip {
+.rmap-now-chip {
   position: absolute; top: -4px; left: -22px;
   background: var(--fg); color: #fff;
-  font-size: 10px; font-weight: 800; padding: 3px 10px; border-radius: 9999px;
-  text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap;
+  font-size: 10px; font-weight: 800; padding: 3px 10px;
+  border-radius: 9999px; text-transform: uppercase; letter-spacing: 0.08em;
 }
 
-.roadmap-rails { margin-top: 8px; display: flex; flex-direction: column; gap: 4px; position: relative; z-index: 1; }
-.roadmap-rail { display: flex; align-items: center; height: 86px; }
-.roadmap-rail-label {
+.rmap-rails { margin-top: 8px; display: flex; flex-direction: column; gap: 4px; position: relative; z-index: 1; }
+.rmap-rail { display: flex; align-items: center; height: 88px; }
+.rmap-rail-label {
   width: 130px; padding-right: 12px; flex-shrink: 0;
   display: flex; align-items: center; gap: 8px;
 }
 .rail-dot { width: 10px; height: 10px; border-radius: 9999px; flex-shrink: 0; }
-.rail-name { font-size: 13px; font-weight: 700; letter-spacing: -0.01em; }
-.roadmap-rail-track { position: relative; flex: 1; height: 86px; }
+.rail-name { font-size: 13px; font-weight: 700; }
+.rmap-rail-track { position: relative; flex: 1; height: 88px; }
 .rail-bar {
-  position: absolute; top: 39px; left: 0; right: 0; height: 8px;
-  border-radius: 9999px; opacity: 0.95;
+  position: absolute; top: 40px; left: 0; right: 0; height: 8px;
+  border-radius: 9999px;
 }
-.rail-station {
-  position: absolute; top: 31px; transform: translateX(-50%);
+.station {
+  position: absolute; top: 33px; transform: translateX(-50%); z-index: 2;
 }
 .station-dot {
   width: 22px; height: 22px; border-radius: 9999px;
   background: var(--card); border-width: 3.5px; border-style: solid;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
-.station-label {
+.station-chip {
   position: absolute; left: 50%; transform: translateX(-50%);
   font-size: 10px; font-weight: 600; color: var(--fg);
   white-space: nowrap; background: var(--card);
   border-width: 1.5px; border-style: solid;
-  border-radius: 8px; padding: 3px 8px; line-height: 1.2;
+  border-radius: 8px; padding: 3px 8px; line-height: 1.3;
 }
-.station-label.above { bottom: 28px; }
-.station-label.below { top: 28px; }
+.station-chip.above { bottom: 26px; }
+.station-chip.below { top:    26px; }
 
-/* ── DASHBOARDS ── */
-.dashboards { padding: 8px 56px 48px; position: relative; z-index: 1; }
+/* ── DASHBOARDS ──────────────────────────────────────────────────────────── */
 .dash-header {
-  display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 6px;
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;
 }
-.dash-title { font-size: 36px; font-weight: 800; letter-spacing: -0.02em; }
-.dash-title-em { font-style: italic; color: var(--fg3); font-weight: 600; }
-.dash-filters { display: flex; gap: 6px; align-items: center; }
-.filter-label { font-size: 12px; color: var(--fg3); margin-right: 6px; }
+.dash-title { font-size: clamp(28px, 2.8vw, 36px); font-weight: 800; letter-spacing: -0.02em; }
+.dash-title em { font-style: italic; color: var(--fg3); font-weight: 600; }
+.filters { display: flex; gap: 6px; align-items: center; }
+.filter-label { font-size: 12px; color: var(--fg3); margin-right: 4px; }
 .filter-btn {
-  padding: 6px 14px; border-radius: 9999px; border: 1.5px solid transparent;
-  background: transparent; color: var(--fg2); font-size: 13px; font-weight: 600;
+  padding: 6px 14px; border-radius: 9999px;
+  border: 1.5px solid transparent; background: transparent;
+  color: var(--fg2); font-size: 13px; font-weight: 600;
   cursor: pointer; font-family: var(--font); transition: all 120ms;
 }
 .filter-btn.active { border-color: var(--fg); background: var(--fg); color: #fff; }
-.filter-btn:not(.active):hover { border-color: var(--border-light); background: var(--card); }
+.filter-btn:not(.active):hover { border-color: var(--dim); background: var(--card); }
 
-/* Train rail */
-.train-rail {
-  position: relative; height: 64px; margin-top: 16px; margin-bottom: 4px; overflow: hidden;
+/* Decorative train rail */
+.train-strip {
+  position: relative; height: 68px; margin: 16px 0 4px; overflow: hidden;
 }
 .train-track {
-  position: absolute; left: 0; right: 0; top: 52px; height: 2px;
-  background: var(--fg); opacity: 0.55; border-radius: 9999px;
+  position: absolute; left: 0; right: 0; top: 54px;
+  height: 2px; background: var(--fg); opacity: 0.5; border-radius: 9999px;
 }
 .train-sleepers {
-  position: absolute; left: 0; right: 0; top: 56px; height: 6px;
+  position: absolute; left: 0; right: 0; top: 58px; height: 6px;
   background-image: repeating-linear-gradient(90deg, #B3B3B3 0 2px, transparent 2px 20px);
 }
-.train-loco {
-  position: absolute; top: 4px; left: 0;
-  animation: chug 18s linear infinite;
+.train-engine {
+  position: absolute; top: 4px; left: -100px;
+  animation: chug 14s linear infinite;
+  will-change: transform;
 }
-@keyframes chug { 0%{transform:translateX(-90px)} 100%{transform:translateX(1380px)} }
+@keyframes chug {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(1500px); }
+}
 
-/* Cards grid */
-.cards-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 22px;
-}
+/* Cards */
+.cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 20px; }
 .dash-card {
   background: var(--card); border: 1.5px solid var(--border);
   border-radius: 18px; padding: 24px;
   display: flex; flex-direction: column; gap: 16px;
-  cursor: pointer; transition: transform 220ms cubic-bezier(0.2,0.7,0.3,1), box-shadow 220ms;
-  position: relative; min-height: 240px; text-decoration: none; color: inherit;
+  cursor: pointer; min-height: 240px;
+  transition: transform 220ms cubic-bezier(0.2,0.7,0.3,1), box-shadow 220ms;
 }
-.dash-card:hover { text-decoration: none; }
 .card-top { display: flex; align-items: flex-start; justify-content: space-between; }
 .card-icon {
   width: 64px; height: 64px; border-radius: 14px; color: #fff;
   display: grid; place-items: center; flex-shrink: 0;
 }
-.card-icon svg { display: block; }
 .card-body { flex: 1; }
 .card-title { font-size: 20px; font-weight: 800; letter-spacing: -0.01em; }
 .card-desc { font-size: 13px; line-height: 1.5; color: var(--fg2); margin-top: 8px; }
 .card-footer {
   margin-top: auto; display: flex; align-items: center; justify-content: space-between;
-  padding-top: 14px; border-top: 1px dashed var(--border-light);
+  padding-top: 14px; border-top: 1px dashed var(--dim);
 }
-.card-pillar {
-  display: flex; align-items: center; gap: 8px;
-  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
-}
+.card-pillar { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
 .pillar-dot { width: 8px; height: 8px; border-radius: 9999px; }
-.card-open {
-  display: inline-flex; align-items: center; gap: 4px;
-  font-size: 12px; font-weight: 700; color: var(--accent);
-}
+.card-open { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 700; color: var(--accent); }
 
-/* Status pills */
-.pill {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 4px 10px; border-radius: 9999px;
-  font-size: 12px; font-weight: 600; line-height: 1; white-space: nowrap;
-}
+/* Pills */
+.pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 9999px; font-size: 12px; font-weight: 600; line-height: 1; white-space: nowrap; }
 .pill-dot { width: 6px; height: 6px; border-radius: 9999px; flex-shrink: 0; }
 .pill-live  { background:rgba(0,166,80,0.10);  color:#00873F; }
-.pill-live  .pill-dot { background:#00A650; animation: pulseDot 1.6s ease-in-out infinite; }
+.pill-live .pill-dot { background:#00A650; animation: pulse 1.6s ease-in-out infinite; }
 .pill-dev   { background:rgba(255,184,0,0.14); color:#8A6500; }
-.pill-dev   .pill-dot { background:#FFB800; }
+.pill-dev .pill-dot { background:#FFB800; }
 .pill-pilot { background:rgba(67,76,228,0.10); color:#434CE4; }
 .pill-pilot .pill-dot { background:#434CE4; }
-@keyframes pulseDot {
-  0%,100% { box-shadow: 0 0 0 0 rgba(0,166,80,0.33); }
+@keyframes pulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(0,166,80,0.35); }
   50%      { box-shadow: 0 0 0 5px rgba(0,166,80,0); }
 }
 
-/* ── FOOTER ── */
+/* ── FOOTER ──────────────────────────────────────────────────────────────── */
 footer {
-  padding: 36px 56px 32px; border-top: 1.5px solid var(--border);
+  padding: 36px 56px 40px; border-top: 1.5px solid var(--border);
   display: flex; align-items: center; justify-content: space-between; margin-top: 16px;
-  position: relative; z-index: 1;
 }
 .footer-left { display: flex; align-items: center; gap: 14px; }
-.footer-divider { width: 1px; height: 18px; background: #EEEEEE; }
+.footer-divider { width: 1px; height: 18px; background: var(--dim); }
 .footer-meta { font-size: 11px; color: var(--fg3); }
 .footer-links { display: flex; gap: 22px; font-size: 12px; font-weight: 500; color: var(--fg2); }
 .footer-links a:hover { color: var(--fg); }
 
-/* ── RESPONSIVE ── */
+/* ── RESPONSIVE ──────────────────────────────────────────────────────────── */
 @media (max-width: 1024px) {
-  .hero-title { font-size: 56px; }
-  .hero-gif { position: static; margin-top: 24px; }
-  .hero { flex-direction: column; }
   .cards-grid { grid-template-columns: repeat(2, 1fr); }
+  .hero { flex-direction: column; align-items: flex-start; }
+  .hero-gif { align-self: center; }
+}
+@media (max-width: 640px) {
+  header, .hero, .section, footer { padding-left: 24px; padding-right: 24px; }
+  .cards-grid { grid-template-columns: 1fr; }
+  h1 { font-size: 48px; }
 }
 </style>
 </head>
 <body>
+
+<!-- viewport-wide background blobs (position: fixed, not clipped by content) -->
+<div class="bg-blob bg-blob-1"></div>
+<div class="bg-blob bg-blob-2"></div>
+
 <div class="page">
-  <!-- faint background blobs -->
-  <div class="bg-blob bg-blob-1"></div>
-  <div class="bg-blob bg-blob-2"></div>
 
   <!-- ── HEADER ── -->
   <header>
     <div class="logo">
       <div class="logo-chip">
-        <svg width="17" height="12" viewBox="0 0 24 16">
+        <svg width="18" height="12" viewBox="0 0 24 16">
           <path d="M2 11 Q 12 1 22 11" stroke="#1A1A1A" stroke-width="2.2" fill="none" stroke-linecap="round"/>
           <circle cx="12" cy="8" r="2.4" fill="#1A1A1A"/>
         </svg>
       </div>
-      <div class="logo-name">mercado<span style="font-weight:400">pago</span></div>
+      <span style="font-size:14px;font-weight:700;letter-spacing:0.01em">mercado<span style="font-weight:400">pago</span></span>
       <div class="logo-divider"></div>
-      <div class="logo-hub">Cash · Hub</div>
+      <span class="logo-hub">Cash · Hub</span>
     </div>
     <nav>
       <a href="#dashboards">Dashboards</a>
       <a href="#roadmap">Roadmap</a>
       <a href="mailto:ext_darami@mercadolibre.com.mx">Equipo</a>
-      <a href="https://github.com/trucklover35/cash-hub" target="_blank" rel="noopener">Changelog</a>
+      <a href="https://github.com/extdarami-sudo/money-rails-hub" target="_blank" rel="noopener">Changelog</a>
     </nav>
   </header>
 
@@ -330,94 +324,84 @@ footer {
         <span class="hero-eyebrow-line"></span>
         <span class="hero-eyebrow-date">Mayo 2026</span>
       </div>
-      <h1 class="hero-title">
-        campañas <span class="hero-title-sep">·</span> <span class="hero-title-accent">money rails</span>
-      </h1>
-      <p class="hero-sub">
-        Dashboards de iniciativas Cash-in / Cash-out · Mercado Pago México.
-      </p>
+      <h1>campañas <span class="h1-sep">·</span> <span class="h1-accent">money rails</span></h1>
+      <p class="hero-sub">Dashboards de iniciativas Cash-in / Cash-out · Mercado Pago México.</p>
     </div>
     <div class="hero-gif">
-      <img src="minecart.gif" alt="" width="220" aria-hidden="true">
+      <img src="minecart.gif" alt="" width="220">
     </div>
   </section>
 
   <!-- ── ROADMAP ── -->
-  <section class="roadmap" id="roadmap">
+  <section class="section" id="roadmap">
     <div class="section-header">
-      <h2 class="section-title">
-        la ruta <span class="section-title-muted">/ las próximas 12 semanas</span>
-      </h2>
+      <h2 class="section-title">la ruta <span class="section-title-muted">/ las próximas 12 semanas</span></h2>
       <span class="section-meta">May 11 — Ago 02 · 14 iniciativas</span>
     </div>
-    <div class="roadmap-card" id="roadmap-card">
-      <!-- injected by JS -->
-    </div>
+    <div class="rmap-card" id="rmap"></div>
   </section>
 
   <!-- ── DASHBOARDS ── -->
-  <section class="dashboards" id="dashboards">
+  <section class="section" id="dashboards">
     <div class="dash-header">
-      <h2 class="dash-title">
-        Los dashboards <span class="dash-title-em">—</span>
-      </h2>
-      <div class="dash-filters">
+      <h2 class="dash-title">Los dashboards <em>—</em></h2>
+      <div class="filters">
         <span class="filter-label">Filtrar:</span>
-        <button class="filter-btn active" onclick="filterCards('todos',this)">Todos</button>
-        <button class="filter-btn" onclick="filterCards('ci',this)">CI</button>
-        <button class="filter-btn" onclick="filterCards('co',this)">CO</button>
-        <button class="filter-btn" onclick="filterCards('campanas',this)">Campañas</button>
+        <button class="filter-btn active" onclick="setFilter('todos',this)">Todos</button>
+        <button class="filter-btn" onclick="setFilter('ci',this)">CI</button>
+        <button class="filter-btn" onclick="setFilter('co',this)">CO</button>
+        <button class="filter-btn" onclick="setFilter('campanas',this)">Campañas</button>
       </div>
     </div>
+
     <!-- decorative train -->
-    <div class="train-rail">
+    <div class="train-strip">
       <div class="train-track"></div>
       <div class="train-sleepers"></div>
-      <div class="train-loco">
-        <svg viewBox="0 0 32 32" width="56" height="56" style="display:block">
+      <div class="train-engine">
+        <svg viewBox="0 0 32 32" width="58" height="58" style="display:block">
           <path d="M2 27.5h28" fill="none" stroke="#3483FA" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
           <rect x="4" y="14" width="15" height="10" rx="1.5" fill="none" stroke="#3483FA" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
           <rect x="6" y="16" width="5" height="5" rx="0.8" fill="none" stroke="#3483FA" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
           <rect x="19" y="16" width="9" height="8" rx="1" fill="none" stroke="#3483FA" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="24" cy="20" r="1.6" fill="none" stroke="#3483FA" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M21 16v-3.5h3V16" fill="none" stroke="#3483FA" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="20" cy="9" r="1.4" fill="none" stroke="#3483FA" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="24" cy="6.5" r="1.8" fill="none" stroke="#3483FA" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="27.5" cy="9.5" r="1.4" fill="none" stroke="#3483FA" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="8" cy="25.5" r="1.8" fill="none" stroke="#3483FA" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="15" cy="25.5" r="1.8" fill="none" stroke="#3483FA" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="23" cy="25.5" r="1.8" fill="none" stroke="#3483FA" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="24" cy="20" r="1.6" fill="none" stroke="#3483FA" stroke-width="1.6"/>
+          <path d="M21 16v-3.5h3V16" fill="none" stroke="#3483FA" stroke-width="1.6" stroke-linecap="round"/>
+          <circle cx="20" cy="9" r="1.4" fill="none" stroke="#3483FA" stroke-width="1.6"/>
+          <circle cx="24" cy="6.5" r="1.8" fill="none" stroke="#3483FA" stroke-width="1.6"/>
+          <circle cx="27.5" cy="9.5" r="1.4" fill="none" stroke="#3483FA" stroke-width="1.6"/>
+          <circle cx="8" cy="25.5" r="1.8" fill="none" stroke="#3483FA" stroke-width="1.6"/>
+          <circle cx="15" cy="25.5" r="1.8" fill="none" stroke="#3483FA" stroke-width="1.6"/>
+          <circle cx="23" cy="25.5" r="1.8" fill="none" stroke="#3483FA" stroke-width="1.6"/>
         </svg>
       </div>
     </div>
-    <div class="cards-grid" id="cards-grid">
-      <!-- injected by JS -->
-    </div>
+
+    <div class="cards-grid" id="grid"></div>
   </section>
 
   <!-- ── FOOTER ── -->
   <footer>
     <div class="footer-left">
-      <div class="logo-chip" style="width:24px;height:24px;border-radius:6px">
-        <svg width="15" height="10" viewBox="0 0 24 16">
+      <div class="logo-chip" style="width:26px;height:26px;border-radius:6px">
+        <svg width="16" height="11" viewBox="0 0 24 16">
           <path d="M2 11 Q 12 1 22 11" stroke="#1A1A1A" stroke-width="2.2" fill="none" stroke-linecap="round"/>
           <circle cx="12" cy="8" r="2.4" fill="#1A1A1A"/>
         </svg>
       </div>
       <div class="footer-divider"></div>
-      <span class="footer-meta">Cash Hub · v1.0 · Generado: 2026-05-15</span>
+      <span class="footer-meta">Cash Hub · v1.0 · 2026-05-15</span>
     </div>
     <div class="footer-links">
       <a href="https://mercadolibre.enterprise.slack.com/archives/cash-mlm" target="_blank" rel="noopener">#cash-mlm</a>
       <a href="mailto:ext_darami@mercadolibre.com.mx">Sugerir un dashboard →</a>
     </div>
   </footer>
-</div>
+
+</div><!-- .page -->
 
 <script>
 // ── DATA ──────────────────────────────────────────────────────────────────────
 
-const ACCENT  = '#3483FA';
 const PILLARS = {
   capi:  { color: '#434CE4', label: 'Capilaridad' },
   exp:   { color: '#7A3FEB', label: 'Experiencia'  },
@@ -427,242 +411,176 @@ const PILLARS = {
 
 const DASHBOARDS = [
   {
-    id: 'atm', pillar: 'capi',
+    id: 'atm', pillar: 'capi', tags: ['co'],
     title: 'ATM banking — migración',
     desc: 'Migración de retiros con TDF a la red bancaria. Cobertura, éxito por adquirente y CVR por geo.',
-    status: 'live', statusLabel: 'En vivo',
-    quarter: 'Q1 26',
+    status: 'live', statusLabel: 'En vivo', quarter: 'Q1 26',
     url: 'https://grid.adminml.com/d/01KRMD8V61CBZ7HQM07YA5RW0M/view',
-    tags: ['co'],
     motif: 'atm',
   },
   {
-    id: 'oxxo-ci', pillar: 'exp',
+    id: 'oxxo-ci', pillar: 'exp', tags: ['ci'],
     title: 'Oxxo Cash-in',
     desc: 'Ingreso de efectivo en Oxxo vía tarjeta digital. Tracking de pre-encendido, conexión directa y rollout.',
-    status: 'dev', statusLabel: 'En desarrollo',
-    quarter: 'Q3 26',
-    url: null,
-    tags: ['ci'],
-    motif: 'oxxo',
+    status: 'dev', statusLabel: 'En desarrollo', quarter: 'Q3 26',
+    url: null, motif: 'oxxo',
   },
   {
-    id: 'campaigns', pillar: 'aware',
+    id: 'campaigns', pillar: 'aware', tags: ['campanas'],
     title: 'Campañas de awareness',
     desc: 'Performance de campañas in-app y externas: CVR, CAC, retención M0/M1 y journeys automatizados.',
-    status: 'live', statusLabel: 'En vivo',
-    quarter: 'Continuo',
-    url: null,
-    tags: ['campanas'],
-    motif: 'megaphone',
+    status: 'live', statusLabel: 'En vivo', quarter: 'Continuo',
+    url: null, motif: 'megaphone',
   },
   {
-    id: 'nps', pillar: 'exp',
+    id: 'nps', pillar: 'exp', tags: ['ci','co'],
     title: 'NPS de la red',
     desc: 'NPS de Cash-in/out por producto, semana y región. Picos por lanzamientos y deprecaciones.',
-    status: 'live', statusLabel: 'En vivo',
-    quarter: 'Continuo',
-    url: null,
-    tags: ['ci', 'co'],
-    motif: 'smile',
+    status: 'live', statusLabel: 'En vivo', quarter: 'Continuo',
+    url: null, motif: 'smile',
   },
   {
-    id: 'red-3b', pillar: 'capi',
+    id: 'red-3b', pillar: 'capi', tags: ['ci','co'],
     title: 'Tiendas 3B — conexión',
     desc: 'Roadmap regulatorio + técnico + legal para CI/CO en 3B. Hitos por área y +3,100 bocas proyectadas.',
-    status: 'pilot', statusLabel: 'En pilot',
-    quarter: 'Q4 26',
-    url: null,
-    tags: ['ci', 'co'],
-    motif: 'shop',
+    status: 'pilot', statusLabel: 'En pilot', quarter: 'Q4 26',
+    url: null, motif: 'shop',
   },
   {
-    id: 'economics', pillar: 'econ',
+    id: 'economics', pillar: 'econ', tags: ['ci','co'],
     title: 'Economics & costos',
     desc: 'Costo por transacción por agregador, ahorro estimado por conexión directa y renegociaciones.',
-    status: 'live', statusLabel: 'En vivo',
-    quarter: 'Continuo',
-    url: null,
-    tags: ['ci', 'co'],
-    motif: 'coins',
+    status: 'live', statusLabel: 'En vivo', quarter: 'Continuo',
+    url: null, motif: 'coins',
   },
 ];
 
-// 12-week roadmap anchored to May 11, 2026
+// 12-week roadmap (May 11 – Aug 02, 2026). "Hoy" = May 14 = 3/7 into week 0.
 const WEEKS = 12;
-const WEEK_STARTS = [
-  { day:'11', month:'May' }, { day:'18', month:null }, { day:'25', month:null },
-  { day:'01', month:'Jun' }, { day:'08', month:null }, { day:'15', month:null },
-  { day:'22', month:null  }, { day:'29', month:null }, { day:'06', month:'Jul' },
-  { day:'13', month:null  }, { day:'20', month:null }, { day:'27', month:null  },
+const NOW_FRAC = 3 / 7;
+const WEEK_LABELS = [
+  {d:'11',m:'May'},{d:'18',m:null},{d:'25',m:null},
+  {d:'01',m:'Jun'},{d:'08',m:null},{d:'15',m:null},
+  {d:'22',m:null},{d:'29',m:null},
+  {d:'06',m:'Jul'},{d:'13',m:null},{d:'20',m:null},{d:'27',m:null},
 ];
-const NOW_FRAC = 3 / 7; // May 14 is Wed, 3 days into week 0
-
 const RAILS = [
   { id:'capi', stops:[
-    { w:0,  label:'ATM banking · ajuste TDF', above:false },
-    { w:3,  label:'Pre-encendido Oxxo',        above:true  },
-    { w:7,  label:'Conexión directa Oxxo',     above:false },
-    { w:10, label:'Sandbox 3B',                above:true  },
+    {w:0, label:'ATM banking · ajuste TDF', up:false},
+    {w:3, label:'Pre-encendido Oxxo',       up:true },
+    {w:7, label:'Conexión directa Oxxo',    up:false},
+    {w:10,label:'Sandbox 3B',               up:true },
   ]},
   { id:'exp', stops:[
-    { w:1,  label:'Restyling roll-out',          above:true  },
-    { w:5,  label:'Convivencia retiro',          above:false },
-    { w:9,  label:'Mapa CI · nuevos filtros',    above:true  },
+    {w:1, label:'Restyling roll-out',       up:true },
+    {w:5, label:'Convivencia retiro',       up:false},
+    {w:9, label:'Mapa CI · nuevos filtros', up:true },
   ]},
   { id:'aware', stops:[
-    { w:2,  label:'Camp. ATM · cashback',        above:false },
-    { w:4,  label:'Journeys newbies M0',         above:true  },
-    { w:6,  label:'Geo-camp Express',            above:false },
-    { w:9,  label:'Maxwell código de barras',    above:true  },
+    {w:2, label:'Camp. ATM · cashback',     up:false},
+    {w:4, label:'Journeys newbies M0',      up:true },
+    {w:6, label:'Geo-camp Express',         up:false},
+    {w:9, label:'Maxwell código de barras', up:true },
   ]},
   { id:'econ', stops:[
-    { w:1,  label:'Renegociar agregador A',      above:true  },
-    { w:6,  label:'Devoluciones NRT',            above:false },
-    { w:11, label:'Análisis costos Oxxo',        above:true  },
+    {w:1, label:'Renegociar agregador A',   up:true },
+    {w:6, label:'Devoluciones NRT',         up:false},
+    {w:11,label:'Análisis costos Oxxo',     up:true },
   ]},
 ];
 
 // ── MOTIF SVGs ────────────────────────────────────────────────────────────────
 
-const STROKE = (color) =>
-  `fill="none" stroke="${color}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"`;
-
-function motifSVG(kind, size, color='currentColor') {
-  const s = (d) => STROKE(color);
-  const vb = `viewBox="0 0 32 32" width="${size}" height="${size}" style="display:block"`;
+function motif(kind, sz, col='currentColor') {
+  const a = `fill="none" stroke="${col}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"`;
+  const v = `viewBox="0 0 32 32" width="${sz}" height="${sz}" style="display:block"`;
   switch(kind) {
-    case 'atm': return `<svg ${vb}>
-      <rect x="5" y="4" width="22" height="20" rx="2.5" ${s()}/>
-      <rect x="8" y="7" width="16" height="6" rx="1" ${s()}/>
-      <path d="M9 16h6M9 19h4" ${s()}/>
-      <rect x="18" y="15" width="6" height="5" rx="1" ${s()}/>
-      <path d="M11 24v3M21 24v3M8 28h16" ${s()}/>
-    </svg>`;
-    case 'oxxo': return `<svg ${vb}>
-      <path d="M6 11h20l-1.5 14a2 2 0 0 1-2 1.8H9.5a2 2 0 0 1-2-1.8L6 11Z" ${s()}/>
-      <path d="M10 11V7a6 6 0 0 1 12 0v4" ${s()}/>
-      <path d="M11 16h10M11 20h7" ${s()}/>
-    </svg>`;
-    case 'megaphone': return `<svg ${vb}>
-      <path d="M5 13v6l16 6V7L5 13Z" ${s()}/>
-      <path d="M21 11c2 1 3 2.5 3 5s-1 4-3 5" ${s()}/>
-      <path d="M9 19v4a2 2 0 0 0 4 0v-2" ${s()}/>
-    </svg>`;
-    case 'smile': return `<svg ${vb}>
-      <circle cx="16" cy="16" r="11" ${s()}/>
-      <circle cx="12" cy="14" r="1.2" fill="${color}" stroke="none"/>
-      <circle cx="20" cy="14" r="1.2" fill="${color}" stroke="none"/>
-      <path d="M11 19c1.4 2 3 3 5 3s3.6-1 5-3" ${s()}/>
-    </svg>`;
-    case 'shop': return `<svg ${vb}>
-      <path d="M6 12l1.5-5h17L26 12" ${s()}/>
-      <path d="M6 12v14h20V12" ${s()}/>
-      <path d="M6 12c0 2 1.5 3 3 3s3-1 3-3M12 12c0 2 1.5 3 3 3s3-1 3-3M18 12c0 2 1.5 3 3 3s3-1 3-3" ${s()}/>
-      <path d="M13 26v-7h6v7" ${s()}/>
-    </svg>`;
-    case 'coins': return `<svg ${vb}>
-      <ellipse cx="12" cy="10" rx="7" ry="3" ${s()}/>
-      <path d="M5 10v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6" ${s()}/>
-      <path d="M5 16v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6" ${s()}/>
-      <ellipse cx="22" cy="22" rx="6" ry="2.6" ${s()}/>
-    </svg>`;
+    case 'atm':      return `<svg ${v}><rect x="5" y="4" width="22" height="20" rx="2.5" ${a}/><rect x="8" y="7" width="16" height="6" rx="1" ${a}/><path d="M9 16h6M9 19h4" ${a}/><rect x="18" y="15" width="6" height="5" rx="1" ${a}/><path d="M11 24v3M21 24v3M8 28h16" ${a}/></svg>`;
+    case 'oxxo':     return `<svg ${v}><path d="M6 11h20l-1.5 14a2 2 0 0 1-2 1.8H9.5a2 2 0 0 1-2-1.8L6 11Z" ${a}/><path d="M10 11V7a6 6 0 0 1 12 0v4" ${a}/><path d="M11 16h10M11 20h7" ${a}/></svg>`;
+    case 'megaphone':return `<svg ${v}><path d="M5 13v6l16 6V7L5 13Z" ${a}/><path d="M21 11c2 1 3 2.5 3 5s-1 4-3 5" ${a}/><path d="M9 19v4a2 2 0 0 0 4 0v-2" ${a}/></svg>`;
+    case 'smile':    return `<svg ${v}><circle cx="16" cy="16" r="11" ${a}/><circle cx="12" cy="14" r="1.2" fill="${col}" stroke="none"/><circle cx="20" cy="14" r="1.2" fill="${col}" stroke="none"/><path d="M11 19c1.4 2 3 3 5 3s3.6-1 5-3" ${a}/></svg>`;
+    case 'shop':     return `<svg ${v}><path d="M6 12l1.5-5h17L26 12" ${a}/><path d="M6 12v14h20V12" ${a}/><path d="M6 12c0 2 1.5 3 3 3s3-1 3-3M12 12c0 2 1.5 3 3 3s3-1 3-3M18 12c0 2 1.5 3 3 3s3-1 3-3" ${a}/><path d="M13 26v-7h6v7" ${a}/></svg>`;
+    case 'coins':    return `<svg ${v}><ellipse cx="12" cy="10" rx="7" ry="3" ${a}/><path d="M5 10v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6" ${a}/><path d="M5 16v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6" ${a}/><ellipse cx="22" cy="22" rx="6" ry="2.6" ${a}/></svg>`;
     default: return '';
   }
 }
 
 // ── RENDER ROADMAP ────────────────────────────────────────────────────────────
 
-function renderRoadmap() {
-  const LABEL_W = 130;
-  const card = document.getElementById('roadmap-card');
-  let html = '';
+function buildRoadmap() {
+  const LW = 130; // label width px
+  let h = '';
 
   // Week header
-  html += `<div class="roadmap-week-header">`;
-  WEEK_STARTS.forEach((wk, i) => {
-    html += `<div class="roadmap-week-cell">`;
-    if (wk.month) {
-      html += `<div class="roadmap-week-month">${wk.month}</div>`;
-    }
-    html += `<div class="roadmap-week-day${i===0?' today':''}">${wk.day}</div>`;
-    html += `</div>`;
+  h += `<div class="rmap-week-row">`;
+  WEEK_LABELS.forEach((wk, i) => {
+    h += `<div class="rmap-week-cell">`;
+    if (wk.m) h += `<div class="rmap-month-label">${wk.m}</div>`;
+    h += `<div class="rmap-day${i===0?' is-today':''}">${wk.d}</div></div>`;
   });
-  html += `</div>`;
+  h += `</div>`;
 
-  // Background grid lines (injected after so z-index works)
-  html += `<div class="roadmap-grid-lines" id="rmap-gridlines">`;
-  for (let i = 0; i < WEEKS; i++) {
-    html += `<div class="roadmap-grid-line"></div>`;
-  }
-  html += `</div>`;
+  // Grid lines overlay
+  h += `<div class="rmap-grid-lines">` + Array.from({length:WEEKS}, () => `<div class="rmap-grid-line"></div>`).join('') + `</div>`;
 
-  // "Hoy" marker — left: calc(24px + 130px + (100% - 48px - 130px) * frac)
-  html += `<div class="roadmap-now" id="rmap-now">
-    <div class="roadmap-now-chip">Hoy</div>
-  </div>`;
+  // "Hoy" marker (positioned by JS after paint)
+  h += `<div class="rmap-now" id="rmap-now"><div class="rmap-now-chip">Hoy</div></div>`;
 
   // Rails
-  html += `<div class="roadmap-rails">`;
+  h += `<div class="rmap-rails">`;
   RAILS.forEach(r => {
     const p = PILLARS[r.id];
-    html += `<div class="roadmap-rail">
-      <div class="roadmap-rail-label">
+    h += `<div class="rmap-rail">
+      <div class="rmap-rail-label">
         <span class="rail-dot" style="background:${p.color}"></span>
         <span class="rail-name">${p.label}</span>
       </div>
-      <div class="roadmap-rail-track" id="track-${r.id}">
+      <div class="rmap-rail-track">
         <div class="rail-bar" style="background:${p.color}"></div>`;
-    r.stops.forEach((stop, i) => {
-      const leftPct = ((stop.w + 0.5) / WEEKS * 100).toFixed(2);
-      html += `<div class="rail-station" style="left:${leftPct}%">
+    r.stops.forEach(s => {
+      const left = ((s.w + 0.5) / WEEKS * 100).toFixed(2);
+      h += `<div class="station" style="left:${left}%">
         <div class="station-dot" style="border-color:${p.color}"></div>
-        <div class="station-label ${stop.above?'above':'below'}" style="border-color:${p.color}">${stop.label}</div>
+        <div class="station-chip ${s.up?'above':'below'}" style="border-color:${p.color}">${s.label}</div>
       </div>`;
     });
-    html += `</div></div>`;
+    h += `</div></div>`;
   });
-  html += `</div>`;
+  h += `</div>`;
 
-  card.innerHTML = html;
+  document.getElementById('rmap').innerHTML = h;
 
-  // Position "Hoy" line dynamically after render (needs card width)
+  // Position "Hoy" line once layout is known
   requestAnimationFrame(() => {
-    const now = document.getElementById('rmap-now');
-    if (!now) return;
-    const cardRect = card.getBoundingClientRect();
-    const trackW = cardRect.width - 48 - LABEL_W;
-    const leftPx = 24 + LABEL_W + trackW * (NOW_FRAC / WEEKS);
-    now.style.left = leftPx + 'px';
+    const card  = document.getElementById('rmap');
+    const nowEl = document.getElementById('rmap-now');
+    if (!card || !nowEl) return;
+    const W = card.clientWidth;
+    const trackW = W - 48 - LW;
+    nowEl.style.left = (24 + LW + trackW * (NOW_FRAC / WEEKS)) + 'px';
   });
 }
 
 // ── RENDER CARDS ─────────────────────────────────────────────────────────────
 
-function pillHtml(status, label) {
-  const cls = `pill pill-${status}`;
-  return `<span class="${cls}"><span class="pill-dot"></span>${label}</span>`;
-}
+let currentFilter = 'todos';
 
-function renderCards(filter='todos') {
-  const grid = document.getElementById('cards-grid');
-  const visible = filter === 'todos'
-    ? DASHBOARDS
-    : DASHBOARDS.filter(d => d.tags.includes(filter));
-
-  grid.innerHTML = visible.map((d, idx) => {
+function buildCards(filter) {
+  currentFilter = filter;
+  const list = filter === 'todos' ? DASHBOARDS : DASHBOARDS.filter(d => d.tags.includes(filter));
+  document.getElementById('grid').innerHTML = list.map((d, i) => {
     const p = PILLARS[d.pillar];
-    const tilt = idx % 2 === 0 ? -1.2 : 1.2;
-    const href = d.url || '#';
-    const target = d.url ? 'target="_blank" rel="noopener"' : '';
-    return `<a class="dash-card" href="${href}" ${target}
+    const tilt = i % 2 === 0 ? -1.2 : 1.2;
+    const tag  = d.url ? 'a' : 'div';
+    const attrs = d.url
+      ? `href="${d.url}" target="_blank" rel="noopener"`
+      : `style="cursor:default"`;
+    return `<${tag} class="dash-card" ${attrs}
         onmouseenter="this.style.transform='translateY(-4px) rotate(${tilt}deg)';this.style.boxShadow='8px 8px 0 0 ${p.color}'"
         onmouseleave="this.style.transform='';this.style.boxShadow=''">
       <div class="card-top">
-        <div class="card-icon" style="background:${p.color}">
-          ${motifSVG(d.motif, 40, '#fff')}
-        </div>
-        ${pillHtml(d.status, d.statusLabel)}
+        <div class="card-icon" style="background:${p.color}">${motif(d.motif, 40, '#fff')}</div>
+        <span class="pill pill-${d.status}"><span class="pill-dot"></span>${d.statusLabel}</span>
       </div>
       <div class="card-body">
         <div class="card-title">${d.title}</div>
@@ -676,26 +594,24 @@ function renderCards(filter='todos') {
           <span style="color:#999">${d.quarter}</span>
         </div>
         <span class="card-open">
-          ${d.url ? 'Abrir' : 'Próximamente'}
-          ${d.url ? `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m9 18 6-6-6-6"/></svg>` : ''}
+          ${d.url
+            ? `Abrir <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m9 18 6-6-6-6"/></svg>`
+            : `<span style="color:#999;font-weight:600;font-size:11px">Próximamente</span>`}
         </span>
       </div>
-    </a>`;
+    </${tag}>`;
   }).join('');
 }
 
-// ── FILTER ───────────────────────────────────────────────────────────────────
-
-function filterCards(filter, btn) {
+function setFilter(f, btn) {
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  renderCards(filter);
+  buildCards(f);
 }
 
 // ── INIT ─────────────────────────────────────────────────────────────────────
-
-renderRoadmap();
-renderCards();
+buildRoadmap();
+buildCards('todos');
 </script>
 </body>
 </html>
