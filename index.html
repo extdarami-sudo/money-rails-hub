@@ -226,6 +226,20 @@ h1 {
 
 /* Cards */
 .cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 20px; }
+
+/* Pagination */
+.pagination {
+  display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 36px;
+}
+.page-btn {
+  padding: 8px 20px; border-radius: 9999px;
+  border: 1.5px solid var(--border); background: var(--card);
+  color: var(--fg); font-size: 13px; font-weight: 600;
+  cursor: pointer; font-family: var(--font); transition: all 120ms;
+}
+.page-btn:hover:not(:disabled) { background: var(--fg); color: #fff; }
+.page-btn:disabled { border-color: var(--dim); color: var(--fg3); cursor: default; }
+.page-info { font-size: 13px; font-weight: 600; color: var(--fg2); min-width: 100px; text-align: center; }
 .dash-card {
   background: var(--card); border: 1.5px solid var(--border);
   border-radius: 18px; padding: 24px;
@@ -377,6 +391,7 @@ footer {
     </div>
 
     <div class="cards-grid" id="grid"></div>
+    <div class="pagination" id="pagination"></div>
   </section>
 
   <!-- ── FOOTER ── -->
@@ -411,7 +426,7 @@ const PILLARS = {
 
 const DASHBOARDS = [
   {
-    id: 'atm', pillar: 'capi', tags: ['co'],
+    id: 'atm', pillar: 'capi', tags: ['co'], added: '2026-01-15',
     title: 'ATM banking — migración',
     desc: 'Migración de retiros con TDF a la red bancaria. Cobertura, éxito por adquirente y CVR por geo.',
     status: 'live', statusLabel: 'En vivo', quarter: 'Q1 26',
@@ -419,39 +434,39 @@ const DASHBOARDS = [
     motif: 'atm',
   },
   {
-    id: 'oxxo-ci', pillar: 'exp', tags: ['ci'],
-    title: 'Oxxo Cash-in',
-    desc: 'Ingreso de efectivo en Oxxo vía tarjeta digital. Tracking de pre-encendido, conexión directa y rollout.',
-    status: 'dev', statusLabel: 'En desarrollo', quarter: 'Q3 26',
-    url: null, motif: 'oxxo',
-  },
-  {
-    id: 'campaigns', pillar: 'aware', tags: ['campanas'],
-    title: 'Campañas de awareness',
-    desc: 'Performance de campañas in-app y externas: CVR, CAC, retención M0/M1 y journeys automatizados.',
-    status: 'live', statusLabel: 'En vivo', quarter: 'Continuo',
-    url: null, motif: 'megaphone',
-  },
-  {
-    id: 'nps', pillar: 'exp', tags: ['ci','co'],
+    id: 'nps', pillar: 'exp', tags: ['ci','co'], added: '2026-01-20',
     title: 'NPS de la red',
     desc: 'NPS de Cash-in/out por producto, semana y región. Picos por lanzamientos y deprecaciones.',
     status: 'live', statusLabel: 'En vivo', quarter: 'Continuo',
     url: null, motif: 'smile',
   },
   {
-    id: 'red-3b', pillar: 'capi', tags: ['ci','co'],
+    id: 'campaigns', pillar: 'aware', tags: ['campanas'], added: '2026-02-01',
+    title: 'Campañas de awareness',
+    desc: 'Performance de campañas in-app y externas: CVR, CAC, retención M0/M1 y journeys automatizados.',
+    status: 'live', statusLabel: 'En vivo', quarter: 'Continuo',
+    url: null, motif: 'megaphone',
+  },
+  {
+    id: 'economics', pillar: 'econ', tags: ['ci','co'], added: '2026-03-01',
+    title: 'Economics & costos',
+    desc: 'Costo por transacción por agregador, ahorro estimado por conexión directa y renegociaciones.',
+    status: 'live', statusLabel: 'En vivo', quarter: 'Continuo',
+    url: null, motif: 'coins',
+  },
+  {
+    id: 'red-3b', pillar: 'capi', tags: ['ci','co'], added: '2026-04-01',
     title: 'Tiendas 3B — conexión',
     desc: 'Roadmap regulatorio + técnico + legal para CI/CO en 3B. Hitos por área y +3,100 bocas proyectadas.',
     status: 'pilot', statusLabel: 'En pilot', quarter: 'Q4 26',
     url: null, motif: 'shop',
   },
   {
-    id: 'economics', pillar: 'econ', tags: ['ci','co'],
-    title: 'Economics & costos',
-    desc: 'Costo por transacción por agregador, ahorro estimado por conexión directa y renegociaciones.',
-    status: 'live', statusLabel: 'En vivo', quarter: 'Continuo',
-    url: null, motif: 'coins',
+    id: 'oxxo-ci', pillar: 'exp', tags: ['ci'], added: '2026-05-01',
+    title: 'Oxxo Cash-in',
+    desc: 'Ingreso de efectivo en Oxxo vía tarjeta digital. Tracking de pre-encendido, conexión directa y rollout.',
+    status: 'dev', statusLabel: 'En desarrollo', quarter: 'Q3 26',
+    url: null, motif: 'oxxo',
   },
 ];
 
@@ -561,20 +576,31 @@ function buildRoadmap() {
   });
 }
 
-// ── RENDER CARDS ─────────────────────────────────────────────────────────────
+// ── RENDER CARDS + PAGINATION ─────────────────────────────────────────────────
 
+const PAGE_SIZE = 6;
 let currentFilter = 'todos';
+let currentPage   = 1;
 
-function buildCards(filter) {
-  currentFilter = filter;
+function filteredSorted(filter) {
   const list = filter === 'todos' ? DASHBOARDS : DASHBOARDS.filter(d => d.tags.includes(filter));
-  document.getElementById('grid').innerHTML = list.map((d, i) => {
-    const p = PILLARS[d.pillar];
+  return [...list].sort((a, b) => new Date(b.added) - new Date(a.added));
+}
+
+function buildCards(filter, page) {
+  currentFilter = filter;
+  currentPage   = page;
+
+  const all      = filteredSorted(filter);
+  const pages    = Math.max(1, Math.ceil(all.length / PAGE_SIZE));
+  const safePage = Math.min(page, pages);
+  const slice    = all.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+
+  document.getElementById('grid').innerHTML = slice.map((d, i) => {
+    const p    = PILLARS[d.pillar];
     const tilt = i % 2 === 0 ? -1.2 : 1.2;
     const tag  = d.url ? 'a' : 'div';
-    const attrs = d.url
-      ? `href="${d.url}" target="_blank" rel="noopener"`
-      : `style="cursor:default"`;
+    const attrs = d.url ? `href="${d.url}" target="_blank" rel="noopener"` : `style="cursor:default"`;
     return `<${tag} class="dash-card" ${attrs}
         onmouseenter="this.style.transform='translateY(-4px) rotate(${tilt}deg)';this.style.boxShadow='8px 8px 0 0 ${p.color}'"
         onmouseleave="this.style.transform='';this.style.boxShadow=''">
@@ -601,17 +627,30 @@ function buildCards(filter) {
       </div>
     </${tag}>`;
   }).join('');
+
+  // Pagination controls — hidden when everything fits on one page
+  const pag = document.getElementById('pagination');
+  if (pages <= 1) { pag.innerHTML = ''; return; }
+  pag.innerHTML = `
+    <button class="page-btn" onclick="changePage(${safePage - 1})" ${safePage === 1 ? 'disabled' : ''}>← Anterior</button>
+    <span class="page-info">Página ${safePage} de ${pages}</span>
+    <button class="page-btn" onclick="changePage(${safePage + 1})" ${safePage === pages ? 'disabled' : ''}>Siguiente →</button>`;
+}
+
+function changePage(p) {
+  buildCards(currentFilter, p);
+  document.getElementById('dashboards').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function setFilter(f, btn) {
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  buildCards(f);
+  buildCards(f, 1);
 }
 
 // ── INIT ─────────────────────────────────────────────────────────────────────
 buildRoadmap();
-buildCards('todos');
+buildCards('todos', 1);
 </script>
 </body>
 </html>
