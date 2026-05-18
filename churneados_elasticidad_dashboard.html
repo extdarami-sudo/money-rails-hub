@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Churneados Elasticidad — Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts@latest/dist/apexcharts.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:             #0D1B2A;
+      --card:           #1A2940;
+      --border:         #2D3E52;
+      --accent-yellow:  #FFE600;
+      --accent-blue:    #2D3277;
+      --text-primary:   #F8FAFC;
+      --text-secondary: #94A3B8;
+      --positive:       #22C55E;
+      --negative:       #EF4444;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text-primary); padding: 28px 24px; }
+
+    /* Header */
+    header { margin-bottom: 28px; }
+    header h1 { font-size: 1.35rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+    header p  { font-size: 0.83rem; color: var(--text-secondary); margin-top: 5px; }
+    .pill { display: inline-block; padding: 3px 11px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; }
+    .pill-pre  { background: var(--accent-blue); color: #fff; }
+    .pill-live { background: rgba(34,197,94,.15); color: var(--positive); border: 1px solid rgba(34,197,94,.35); }
+    .pill-done { background: var(--border); color: var(--text-secondary); }
+
+    /* Layout */
+    .kpi-row   { display: grid; grid-template-columns: repeat(auto-fit, minmax(185px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .main-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 24px; }
+    .full      { grid-column: 1 / -1; }
+
+    /* KPI card */
+    .kpi { background: var(--card); border: 1px solid var(--border); border-left: 3px solid var(--accent-yellow); border-radius: 8px; padding: 16px 18px; }
+    .kpi .lbl { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary); margin-bottom: 8px; }
+    .kpi .val { font-size: 28px; font-weight: 700; line-height: 1; }
+    .kpi .sub { font-size: 11px; color: var(--text-secondary); margin-top: 5px; }
+    .pending  { color: var(--text-secondary) !important; font-size: 18px !important; font-style: italic; }
+    .pos { color: var(--positive); }
+    .neg { color: var(--negative); }
+
+    /* Chart card */
+    .chart-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 20px 22px 12px; }
+    .chart-card h3 { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary); margin-bottom: 16px; }
+
+    /* Table */
+    .table-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+    .table-wrap h3 { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary); padding: 16px 20px; border-bottom: 1px solid var(--border); }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    thead th { background: var(--border); color: var(--text-secondary); padding: 10px 16px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+    tbody td { padding: 11px 16px; border-bottom: 1px solid var(--border); }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: rgba(255,255,255,0.03); }
+    td.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+    .arm-pill { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 0.78rem; font-weight: 700; }
+    .arm-CC { background: #2D3E52; color: var(--text-secondary); }
+    .arm-A  { background: #1e3a5f; color: #60a5fa; }
+    .arm-B  { background: #1a3828; color: #4ade80; }
+
+    /* Info box */
+    .info-box { background: var(--card); border: 1px solid var(--border); border-left: 3px solid var(--accent-blue); border-radius: 8px; padding: 14px 18px; font-size: 0.82rem; color: var(--text-secondary); line-height: 1.7; }
+    .info-box strong { color: var(--text-primary); }
+    .info-box code { background: var(--border); padding: 1px 6px; border-radius: 4px; font-size: 0.78rem; color: var(--text-primary); }
+
+    @media (max-width: 1024px) {
+      .main-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Proyecto: Churneados Elasticidad | Generado: 2026-05-15 | Datos: SBOX_MPINDIVIDUALSMLM.CHURN_FEB2026_AUDIENCE_V1 -->
+
+<header>
+  <h1>Churneados Feb 2026 &mdash; Experimento Elasticidad <span class="pill" id="status-pill"></span></h1>
+  <p>Envio: 20 mayo 2026 &nbsp;&middot;&nbsp; Ventana de atribucion: 7 dias (cierra 27 mayo) &nbsp;&middot;&nbsp; FlowsInitCode: CHURN_ELASTICITY_TEST_ENVIO &nbsp;&middot;&nbsp; 41,352 usuarios totales</p>
+</header>
+
+<script>
+// =============================================================================
+// DATOS — actualizar esta seccion cuando cierre la ventana (27 mayo 2026)
+// =============================================================================
+
+// conversiones: usuarios con >= 1 cash-in de >= $100 MXN en los 7 dias post-push
+// tpv:         suma de TOTAL_PAID_LC de esos usuarios en la ventana
+// cashback:    suma de INCENTIVOS_LC en IncentivosMaster para FlowsInitCode arriba
+const ARMS = [
+  { arm: 'CC', label: 'Control',    incentivo: 0,  n: 13784, conversiones: null, tpv: null, cashback: 0     },
+  { arm: 'A',  label: 'Arm A ($5)', incentivo: 5,  n: 13784, conversiones: null, tpv: null, cashback: null  },
+  { arm: 'B',  label: 'Arm B ($15)',incentivo: 15, n: 13784, conversiones: null, tpv: null, cashback: null  },
+];
+
+// Conversiones nuevas por dia (no acumuladas). Dia 1 = 20 mayo.
+const DAILY = {
+  labels: ['May 20','May 21','May 22','May 23','May 24','May 25','May 26','May 27'],
+  CC: [null, null, null, null, null, null, null, null],
+  A:  [null, null, null, null, null, null, null, null],
+  B:  [null, null, null, null, null, null, null, null],
+};
+
+// =============================================================================
+// HELPERS
+// =============================================================================
+const f    = n  => n  == null ? '—' : n.toLocaleString('es-MX');
+const fp   = n  => n  == null ? '—' : (n * 100).toFixed(2) + '%';
+const fm   = n  => n  == null ? '—' : '$' + n.toLocaleString('es-MX', { maximumFractionDigits: 0 });
+const rate = a  => a.conversiones == null ? null : a.conversiones / a.n;
+const lift = (a, cc) => {
+  const r = rate(a), b = rate(cc);
+  return r == null || b == null ? null : r - b;
+};
+const liftStr = v => v == null ? '—' : (v >= 0 ? '+' : '') + (v * 100).toFixed(2) + 'pp';
+const cumulate = arr => { let s = 0; return arr.map(v => v == null ? null : (s += v, s)); };
+
+const cc   = ARMS.find(a => a.arm === 'CC');
+const armA = ARMS.find(a => a.arm === 'A');
+const armB = ARMS.find(a => a.arm === 'B');
+const liftA = lift(armA, cc);
+const liftB = lift(armB, cc);
+
+// Status pill
+const today  = new Date();
+const envio  = new Date('2026-05-20');
+const cierre = new Date('2026-05-27');
+const pill   = document.getElementById('status-pill');
+if      (today < envio)  { pill.textContent = 'Pre-lanzamiento'; pill.className = 'pill pill-pre';  }
+else if (today <= cierre){ pill.textContent = 'En curso';        pill.className = 'pill pill-live'; }
+else                     { pill.textContent = 'Ventana cerrada'; pill.className = 'pill pill-done'; }
+
+// BASE ApexCharts
+const BASE = {
+  chart:  { fontFamily: 'Inter, sans-serif', background: 'transparent', toolbar: { show: false }, animations: { enabled: false } },
+  theme:  { mode: 'dark' },
+  colors: ['#94A3B8', '#60a5fa', '#4ade80'],
+  grid:   { borderColor: '#2D3E52', strokeDashArray: 4 },
+  tooltip:{ theme: 'dark' },
+  xaxis:  { labels: { style: { colors: '#94A3B8', fontSize: '12px' } }, axisBorder: { show: false } },
+  yaxis:  { labels: { style: { colors: '#94A3B8', fontSize: '12px' } } },
+};
+</script>
+
+<!-- KPI ROW -->
+<div class="kpi-row">
+
+  <div class="kpi">
+    <div class="lbl">Audiencia total</div>
+    <div class="val">41,352</div>
+    <div class="sub">CC 13,784 &middot; A 13,784 &middot; B 13,784</div>
+  </div>
+
+  <div class="kpi">
+    <div class="lbl">Conv. CC (organica)</div>
+    <div class="val" id="kpi-conv-cc"></div>
+    <div class="sub" id="kpi-conv-cc-sub"></div>
+  </div>
+
+  <div class="kpi">
+    <div class="lbl">Conv. Arm A ($5)</div>
+    <div class="val" id="kpi-conv-a"></div>
+    <div class="sub" id="kpi-conv-a-sub"></div>
+  </div>
+
+  <div class="kpi">
+    <div class="lbl">Conv. Arm B ($15)</div>
+    <div class="val" id="kpi-conv-b"></div>
+    <div class="sub" id="kpi-conv-b-sub"></div>
+  </div>
+
+  <div class="kpi">
+    <div class="lbl">Lift A vs CC</div>
+    <div class="val" id="kpi-lift-a"></div>
+  </div>
+
+  <div class="kpi">
+    <div class="lbl">Lift B vs CC</div>
+    <div class="val" id="kpi-lift-b"></div>
+  </div>
+
+  <div class="kpi">
+    <div class="lbl">Cashback desembolsado</div>
+    <div class="val" id="kpi-cashback"></div>
+    <div class="sub">MXN total (A + B)</div>
+  </div>
+
+  <div class="kpi">
+    <div class="lbl">TPV generado</div>
+    <div class="val" id="kpi-tpv"></div>
+    <div class="sub">MXN tratamiento total</div>
+  </div>
+
+</div>
+
+<!-- MAIN GRID -->
+<div class="main-grid">
+
+  <div class="chart-card">
+    <h3>Tasa de conversion por arm</h3>
+    <div id="chart-bar"></div>
+  </div>
+
+  <div class="chart-card">
+    <h3>Conversiones acumuladas diarias</h3>
+    <div id="chart-line"></div>
+  </div>
+
+  <div class="table-wrap full">
+    <h3>Resumen por arm</h3>
+    <table id="tbl"></table>
+  </div>
+
+  <div class="info-box full">
+    <strong>Notas metodologicas:</strong>
+    Conversion = al menos 1 cash-in >= $100 MXN dentro de los 7 dias post-push.
+    Lift = tasa del arm de tratamiento menos tasa del CC.
+    TPV incluye solo usuarios de tratamiento; suma de <code>TOTAL_PAID_LC</code> en ventana.
+    Cashback fuente: <code>BT_MP_MLM_IncentivosMaster</code> filtrando <code>FlowsInitCode = 'CHURN_ELASTICITY_TEST_ENVIO'</code>.
+  </div>
+
+</div>
+
+<script>
+// Populate KPI values
+function kpiVal(id, val, cls) {
+  const el = document.getElementById(id);
+  if (val === '—') { el.className = 'val pending'; el.textContent = 'Pendiente'; }
+  else { el.textContent = val; if (cls) el.classList.add(cls); }
+}
+function kpiSub(id, txt) { const el = document.getElementById(id); if (el) el.textContent = txt; }
+
+kpiVal('kpi-conv-cc', fp(rate(cc)));
+kpiSub('kpi-conv-cc-sub', cc.conversiones == null ? 'Pendiente' : f(cc.conversiones) + ' usuarios');
+
+kpiVal('kpi-conv-a', fp(rate(armA)));
+kpiSub('kpi-conv-a-sub', armA.conversiones == null ? 'Pendiente' : f(armA.conversiones) + ' usuarios');
+
+kpiVal('kpi-conv-b', fp(rate(armB)));
+kpiSub('kpi-conv-b-sub', armB.conversiones == null ? 'Pendiente' : f(armB.conversiones) + ' usuarios');
+
+kpiVal('kpi-lift-a', liftStr(liftA), liftA == null ? null : liftA >= 0 ? 'pos' : 'neg');
+kpiVal('kpi-lift-b', liftStr(liftB), liftB == null ? null : liftB >= 0 ? 'pos' : 'neg');
+
+const totalCashback = (armA.cashback || 0) + (armB.cashback || 0);
+kpiVal('kpi-cashback', totalCashback ? fm(totalCashback) : '—');
+
+const totalTPV = (armA.tpv || 0) + (armB.tpv || 0);
+kpiVal('kpi-tpv', totalTPV ? fm(totalTPV) : '—');
+
+// Bar chart
+new ApexCharts(document.getElementById('chart-bar'), {
+  ...BASE,
+  chart: { ...BASE.chart, type: 'bar', height: 280 },
+  series: [{ name: 'Conversion %', data: ARMS.map(a => rate(a) != null ? parseFloat((rate(a) * 100).toFixed(2)) : 0) }],
+  xaxis: { ...BASE.xaxis, categories: ['Control (CC)', 'Arm A ($5)', 'Arm B ($15)'] },
+  yaxis: { ...BASE.yaxis, labels: { ...BASE.yaxis.labels, formatter: v => v + '%' } },
+  colors: ['#94A3B8', '#60a5fa', '#4ade80'],
+  plotOptions: { bar: { borderRadius: 4, columnWidth: '45%', distributed: true } },
+  legend: { show: false },
+  dataLabels: {
+    enabled: true,
+    formatter: v => v === 0 ? '—' : v + '%',
+    style: { colors: ['#F8FAFC'], fontSize: '12px', fontWeight: '600' },
+  },
+  annotations: {
+    yaxis: rate(cc) != null ? [{
+      y: parseFloat((rate(cc) * 100).toFixed(2)),
+      borderColor: '#FFE600',
+      strokeDashArray: 5,
+      label: { text: 'Baseline CC', borderColor: 'transparent', style: { color: '#FFE600', background: 'transparent', fontSize: '11px' } },
+    }] : [],
+  },
+}).render();
+
+// Line chart
+new ApexCharts(document.getElementById('chart-line'), {
+  ...BASE,
+  chart: { ...BASE.chart, type: 'line', height: 280 },
+  series: [
+    { name: 'CC',          data: cumulate(DAILY.CC) },
+    { name: 'Arm A ($5)',  data: cumulate(DAILY.A)  },
+    { name: 'Arm B ($15)', data: cumulate(DAILY.B)  },
+  ],
+  xaxis: { ...BASE.xaxis, categories: DAILY.labels },
+  stroke: { width: 2, curve: 'smooth' },
+  markers: { size: 4 },
+  noData: { text: 'Disponible al inicio de la ventana', style: { color: '#94A3B8', fontSize: '13px' } },
+}).render();
+
+// Summary table
+const tbl = document.getElementById('tbl');
+tbl.innerHTML = `
+  <thead><tr>
+    <th>Arm</th><th>Incentivo</th>
+    <th class="num">Usuarios</th><th class="num">Conversiones</th>
+    <th class="num">Tasa</th><th class="num">Lift vs CC</th>
+    <th class="num">Cashback MXN</th><th class="num">TPV MXN</th>
+  </tr></thead>
+  <tbody>
+    ${ARMS.map(a => {
+      const l = a.arm === 'CC' ? null : lift(a, cc);
+      const lc = l == null ? '' : l > 0 ? 'pos' : l < 0 ? 'neg' : '';
+      return `<tr>
+        <td><span class="arm-pill arm-${a.arm}">${a.label}</span></td>
+        <td>${a.incentivo ? '$' + a.incentivo + ' MXN' : '—'}</td>
+        <td class="num">${f(a.n)}</td>
+        <td class="num">${f(a.conversiones)}</td>
+        <td class="num">${fp(rate(a))}</td>
+        <td class="num ${lc}">${liftStr(l)}</td>
+        <td class="num">${fm(a.cashback)}</td>
+        <td class="num">${fm(a.tpv)}</td>
+      </tr>`;
+    }).join('')}
+  </tbody>`;
+</script>
+</body>
+</html>
