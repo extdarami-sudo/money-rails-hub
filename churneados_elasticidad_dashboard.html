@@ -92,17 +92,18 @@
 // tpv:         suma de TOTAL_PAID_LC de esos usuarios en la ventana
 // cashback:    suma de INCENTIVOS_LC en IncentivosMaster para FlowsInitCode arriba
 const ARMS = [
-  { arm: 'CC', label: 'Control',    incentivo: 0,  n: 13784, conversiones: null, tpv: null, cashback: 0     },
-  { arm: 'A',  label: 'Arm A ($5)', incentivo: 5,  n: 13784, conversiones: null, tpv: null, cashback: null  },
-  { arm: 'B',  label: 'Arm B ($15)',incentivo: 15, n: 13784, conversiones: null, tpv: null, cashback: null  },
+  { arm: 'CC', label: 'Control',    incentivo: 0,  n: 13784, conversiones: 111, tpv: 289746, cashback: 0    },
+  { arm: 'A',  label: 'Arm A ($5)', incentivo: 5,  n: 13784, conversiones: 90,  tpv: 269720, cashback: null },
+  { arm: 'B',  label: 'Arm B ($15)',incentivo: 15, n: 13784, conversiones: 112, tpv: 307215, cashback: null },
 ];
 
 // Conversiones nuevas por dia (no acumuladas). Dia 1 = 20 mayo.
+// Dias con null = aun sin datos. Dia actual puede ser parcial.
 const DAILY = {
   labels: ['May 20','May 21','May 22','May 23','May 24','May 25','May 26','May 27'],
-  CC: [null, null, null, null, null, null, null, null],
-  A:  [null, null, null, null, null, null, null, null],
-  B:  [null, null, null, null, null, null, null, null],
+  CC: [111, 0,    null, null, null, null, null, null],
+  A:  [90,  0,    null, null, null, null, null, null],
+  B:  [111, 1,    null, null, null, null, null, null],
 };
 
 // =============================================================================
