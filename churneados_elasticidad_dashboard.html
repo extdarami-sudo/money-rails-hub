@@ -84,31 +84,128 @@
 </header>
 
 <script>
-// =============================================================================
-// DATOS — actualizar esta seccion cuando cierre la ventana (27 mayo 2026)
-// =============================================================================
-
-// conversiones: usuarios con >= 1 cash-in de >= $100 MXN en los 7 dias post-push
-// tpv:         suma de TOTAL_PAID_LC de esos usuarios en la ventana
-// cashback:    suma de INCENTIVOS_LC en IncentivosMaster para FlowsInitCode arriba
-const ARMS = [
-  { arm: 'CC', label: 'Control',    incentivo: 0,  n: 13784, conversiones: 568, tpv: 1852167, cashback: 0    },
-  { arm: 'A',  label: 'Arm A ($5)', incentivo: 5,  n: 13784, conversiones: 571, tpv: 1654036, cashback: 1705 },
-  { arm: 'B',  label: 'Arm B ($15)',incentivo: 15, n: 13784, conversiones: 570, tpv: 1660127, cashback: 5685 },
-];
-
-// Conversiones nuevas por dia (no acumuladas). Dia 1 = 20 mayo.
-// Dias con null = aun sin datos.
-const DAILY = {
-  labels: ['May 20','May 21','May 22','May 23','May 24','May 25','May 26','May 27'],
-  CC: [111, 93, 83, 75,  72,  134, null, null],
-  A:  [90,  86, 86, 80,  94,  135, null, null],
-  B:  [111, 91, 86, 91,  68,  123, null, null],
+// ╔════════════════════════════════════════════════╗
+// ║  BLOQUE 1 — DASHBOARD_META                      ║
+// ║  Define qué queries ejecutar para actualizar    ║
+// ╚════════════════════════════════════════════════╝
+const DASHBOARD_META = {
+  version: "1",
+  proyecto: "Churneados Elasticidad — Mayo 2026",
+  ventana: { tipo: "post_campana", fecha_fin_campana: "2026-05-27", dias_reporte: null },
+  ultima_actualizacion: "2026-05-27",
+  queries: [
+    {
+      id: "brazos",
+      descripcion: "Conversiones, TPV y cashback por brazo al cierre de la ventana de atribución de 7 días post-push",
+      sql: /* sql */ `
+        -- Conversión = >= 1 cash-in de >= $100 MXN en los 7 días post-push
+        -- FlowsInitCode de cashback: CHURN_ELASTICITY_TEST_ENVIO
+        WITH audiencia AS (
+          SELECT CUS_CUST_ID, arm, incentivo_mxn, label
+          FROM \`meli-bi-data.SBOX_MPINDIVIDUALSMLM.CHURN_FEB2026_AUDIENCE_V1\`
+        ),
+        conversiones AS (
+          SELECT
+            m.CUS_CUST_ID,
+            SUM(m.TOTAL_PAID_LC) AS tpv
+          FROM \`meli-bi-data.WHOWNER.BT_MP_MAUS_TRANSACTIONS\` m
+          INNER JOIN audiencia a USING (CUS_CUST_ID)
+          WHERE m.SIT_SITE_ID = 'MLM'
+            AND m.TRANSACTION_STATUS = 'approved'
+            AND m.FLOW_KPI IN ('MAF_EFECTIVO', 'MAF_MELIPLACES')
+            AND m.TOTAL_PAID_LC >= 100
+            AND DATE(m.TIM_DATE) BETWEEN '{{fecha_inicio}}' AND DATE_ADD('{{fecha_inicio}}', INTERVAL 7 DAY)
+          GROUP BY 1
+          HAVING COUNT(*) >= 1
+        ),
+        cashback AS (
+          SELECT CUS_CUST_ID, SUM(INCENTIVOS_LC) AS cashback_mxn
+          FROM \`meli-bi-data.SBOX_MPINDIVIDUALSMLM.BT_MP_MLM_IncentivosMaster\`
+          WHERE FlowsInitCode = 'CHURN_ELASTICITY_TEST_ENVIO'
+          GROUP BY 1
+        )
+        SELECT
+          a.arm,
+          ANY_VALUE(a.label)                AS label,
+          ANY_VALUE(a.incentivo_mxn)        AS incentivo,
+          COUNT(DISTINCT a.CUS_CUST_ID)     AS n,
+          COUNT(DISTINCT c.CUS_CUST_ID)     AS conversiones,
+          COALESCE(SUM(c.tpv), 0)           AS tpv,
+          COALESCE(SUM(cb.cashback_mxn), 0) AS cashback
+        FROM audiencia a
+        LEFT JOIN conversiones c USING (CUS_CUST_ID)
+        LEFT JOIN cashback cb USING (CUS_CUST_ID)
+        GROUP BY a.arm
+        ORDER BY a.arm
+      `,
+      notas: "{{fecha_inicio}} = fecha de envío del push (2026-05-20). Tabla de audiencia freezada: CHURN_FEB2026_AUDIENCE_V1 en SBOX_MPINDIVIDUALSMLM."
+    },
+    {
+      id: "diario",
+      descripcion: "Primera conversión nueva por día y por brazo (no acumulada) durante la ventana de 7 días",
+      sql: /* sql */ `
+        WITH audiencia AS (
+          SELECT CUS_CUST_ID, arm
+          FROM \`meli-bi-data.SBOX_MPINDIVIDUALSMLM.CHURN_FEB2026_AUDIENCE_V1\`
+        ),
+        primera_conversion AS (
+          SELECT
+            m.CUS_CUST_ID,
+            DATE(m.TIM_DATE) AS fecha
+          FROM \`meli-bi-data.WHOWNER.BT_MP_MAUS_TRANSACTIONS\` m
+          INNER JOIN audiencia a USING (CUS_CUST_ID)
+          WHERE m.SIT_SITE_ID = 'MLM'
+            AND m.TRANSACTION_STATUS = 'approved'
+            AND m.FLOW_KPI IN ('MAF_EFECTIVO', 'MAF_MELIPLACES')
+            AND m.TOTAL_PAID_LC >= 100
+            AND DATE(m.TIM_DATE) BETWEEN '{{fecha_inicio}}' AND DATE_ADD('{{fecha_inicio}}', INTERVAL 7 DAY)
+          QUALIFY ROW_NUMBER() OVER (PARTITION BY m.CUS_CUST_ID ORDER BY m.TIM_DATE) = 1
+        )
+        SELECT
+          FORMAT_DATE('%b %d', pc.fecha) AS fecha_label,
+          COUNTIF(a.arm = 'CC')          AS CC,
+          COUNTIF(a.arm = 'A')           AS A,
+          COUNTIF(a.arm = 'B')           AS B
+        FROM primera_conversion pc
+        INNER JOIN audiencia a USING (CUS_CUST_ID)
+        GROUP BY pc.fecha
+        ORDER BY pc.fecha
+      `,
+      notas: "{{fecha_inicio}} = 2026-05-20. QUALIFY ROW_NUMBER = 1 cuenta solo la primera conversión por usuario. Días sin datos aún → null en el array."
+    }
+  ]
 };
 
-// =============================================================================
-// HELPERS
-// =============================================================================
+// ╔════════════════════════════════════════════════╗
+// ║  BLOQUE 2 — DATA                                ║
+// ║  Ultima actualizacion: 2026-05-27 (FINAL)       ║
+// ║  REEMPLAZAR ESTE BLOQUE al actualizar           ║
+// ╚════════════════════════════════════════════════╝
+const DATA = {
+  // conversiones: usuarios con >= 1 cash-in de >= $100 MXN en los 7 dias post-push
+  // tpv:         suma de TOTAL_PAID_LC de esos usuarios en la ventana
+  // cashback:    suma de INCENTIVOS_LC en IncentivosMaster para FlowsInitCode CHURN_ELASTICITY_TEST_ENVIO
+  brazos: [
+    { arm: 'CC', label: 'Control',    incentivo: 0,  n: 13784, conversiones: 675, tpv: 2207747, cashback: 0    },
+    { arm: 'A',  label: 'Arm A ($5)', incentivo: 5,  n: 13784, conversiones: 665, tpv: 1969051, cashback: 2850 },
+    { arm: 'B',  label: 'Arm B ($15)',incentivo: 15, n: 13784, conversiones: 672, tpv: 1968563, cashback: 8550 },
+  ],
+  // Conversiones nuevas por dia (no acumuladas). Dia 1 = 20 mayo. Ventana cerrada — datos completos.
+  diario: {
+    labels: ['May 20','May 21','May 22','May 23','May 24','May 25','May 26','May 27'],
+    CC: [111, 93, 83, 75,  72,  134, 106, 1],
+    A:  [90,  86, 86, 80,  94,  135,  93, 1],
+    B:  [111, 91, 86, 91,  68,  123, 102, 0],
+  },
+};
+
+// ╔════════════════════════════════════════════════╗
+// ║  BLOQUE 3 — RENDER                              ║
+// ║  Solo lee de DATA — no modificar en actualizaciones ║
+// ╚════════════════════════════════════════════════╝
+const ARMS  = DATA.brazos;
+const DAILY = DATA.diario;
+
 const f    = n  => n  == null ? '—' : n.toLocaleString('es-MX');
 const fp   = n  => n  == null ? '—' : (n * 100).toFixed(2) + '%';
 const fm   = n  => n  == null ? '—' : '$' + n.toLocaleString('es-MX', { maximumFractionDigits: 0 });
