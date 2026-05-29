@@ -92,7 +92,7 @@ const DASHBOARD_META = {
   version: "1",
   proyecto: "Churneados Elasticidad — Mayo 2026",
   ventana: { tipo: "post_campana", fecha_fin_campana: "2026-05-27", dias_reporte: null },
-  ultima_actualizacion: "2026-05-27",
+  ultima_actualizacion: "2026-05-29",
   queries: [
     {
       id: "brazos",
@@ -178,7 +178,7 @@ const DASHBOARD_META = {
 
 // ╔════════════════════════════════════════════════╗
 // ║  BLOQUE 2 — DATA                                ║
-// ║  Ultima actualizacion: 2026-05-27 (FINAL)       ║
+// ║  Ultima actualizacion: 2026-05-29 (FINAL)       ║
 // ║  REEMPLAZAR ESTE BLOQUE al actualizar           ║
 // ╚════════════════════════════════════════════════╝
 const DATA = {
@@ -186,9 +186,9 @@ const DATA = {
   // tpv:         suma de TOTAL_PAID_LC de esos usuarios en la ventana
   // cashback:    suma de INCENTIVOS_LC en IncentivosMaster para FlowsInitCode CHURN_ELASTICITY_TEST_ENVIO
   brazos: [
-    { arm: 'CC', label: 'Control',    incentivo: 0,  n: 13784, conversiones: 675, tpv: 2207747, cashback: 0    },
-    { arm: 'A',  label: 'Arm A ($5)', incentivo: 5,  n: 13784, conversiones: 665, tpv: 1969051, cashback: 2850 },
-    { arm: 'B',  label: 'Arm B ($15)',incentivo: 15, n: 13784, conversiones: 672, tpv: 1968563, cashback: 8550 },
+    { arm: 'CC', label: 'Control',    incentivo: 0,  n: 13784, conversiones: 777, tpv: 2551955, cashback: 0     },
+    { arm: 'A',  label: 'Arm A ($5)', incentivo: 5,  n: 13784, conversiones: 765, tpv: 2319279, cashback: 3820  },
+    { arm: 'B',  label: 'Arm B ($15)',incentivo: 15, n: 13784, conversiones: 756, tpv: 2239178, cashback: 11340 },
   ],
   // Conversiones nuevas por dia (no acumuladas). Dia 1 = 20 mayo. Ventana cerrada — datos completos.
   diario: {
