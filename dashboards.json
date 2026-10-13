@@ -1,0 +1,54 @@
+[
+  {
+    "id": "atm",
+    "pillar": "capi",
+    "tags": ["co"],
+    "added": "2026-01-15",
+    "title": "ATM banking — migración",
+    "desc": "Migración de retiros con TDF a la red bancaria. Cobertura, éxito por adquirente y CVR por geo.",
+    "status": "live",
+    "statusLabel": "En vivo",
+    "quarter": "Q1 26",
+    "url": "https://grid.adminml.com/d/01KRMD8V61CBZ7HQM07YA5RW0M/view",
+    "motif": "atm"
+  },
+  {
+    "id": "churneados-elasticidad",
+    "pillar": "econ",
+    "tags": ["ci", "campanas"],
+    "added": "2026-05-15",
+    "title": "Churneados Elasticidad",
+    "desc": "Experimento de sensibilidad de precio en usuarios churneados de cash-in. Compara tasa de reactivacion entre incentivo de $5 y $15 MXN.",
+    "status": "live",
+    "statusLabel": "En vivo",
+    "quarter": "Q2 26",
+    "url": "https://grid.adminml.com/d/01KT2KW64RWB08KPFVKT9Z8MVA/view",
+    "motif": "megaphone"
+  },
+  {
+    "id": "hotsale-moneyrails",
+    "pillar": "capi",
+    "tags": ["ci", "campanas"],
+    "added": "2026-05-26",
+    "title": "Hot Sale 2026 — Money Rails",
+    "desc": "Seguimiento de push notifications e incentivos de cashback para la campana JOURNEY_HOTSALE_MONEYRAILS. Funnel de envio, tasa de apertura y desembolsos diarios.",
+    "status": "live",
+    "statusLabel": "En vivo",
+    "quarter": "Q2 26",
+    "url": "https://grid.adminml.com/d/01KSJTNJN4B1G1CRSR0FX1806E/view",
+    "motif": "shop"
+  },
+  {
+    "id": "misma-titularidad-resultados",
+    "pillar": "aware",
+    "tags": ["co", "campanas"],
+    "added": "2026-06-15",
+    "title": "Campaña Misma Titularidad — Resultados",
+    "desc": "Las tres mini-campañas (Cash, Payments, TD) leídas a 30 y 60 días contra su grupo de control. Adoptar un producto de MP no reduce las transferencias a banco propio: quien convirtió las mantuvo o las subió.",
+    "status": "live",
+    "statusLabel": "En vivo",
+    "quarter": "Q2 26",
+    "url": "https://grid.adminml.com/d/01KV6KB0BQMXX8R2GC6JT6C5CY/view",
+    "motif": "coins"
+  }
+]

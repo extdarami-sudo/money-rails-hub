@@ -1,0 +1,27 @@
+{
+  "_nota": "Registro para el cron de auto-actualización. Solo apunta a documentos de Grid; NO contiene SQL ni nombres de tablas (este repo es público). El cron descarga cada doc de Grid, lee las queries embebidas en DASHBOARD_META, las corre y sube una nueva versión a Grid. Mantener este archivo libre de queries.",
+  "landing_page": {
+    "grid_doc_id": "01KRMDA0A0KJXQWAE07DRVA6BF",
+    "grid_view_url": "https://grid.adminml.com/d/01KRMDA0A0KJXQWAE07DRVA6BF/view"
+  },
+  "campaigns": [
+    {
+      "id": "atm",
+      "grid_doc_id": "01KRMD8V61CBZ7HQM07YA5RW0M",
+      "grid_view_url": "https://grid.adminml.com/d/01KRMD8V61CBZ7HQM07YA5RW0M/view",
+      "schedule": "daily"
+    },
+    {
+      "id": "hotsale-moneyrails",
+      "grid_doc_id": "01KSJTNJN4B1G1CRSR0FX1806E",
+      "grid_view_url": "https://grid.adminml.com/d/01KSJTNJN4B1G1CRSR0FX1806E/view",
+      "schedule": "daily"
+    },
+    {
+      "id": "churneados-elasticidad",
+      "grid_doc_id": "01KT2KW64RWB08KPFVKT9Z8MVA",
+      "grid_view_url": "https://grid.adminml.com/d/01KT2KW64RWB08KPFVKT9Z8MVA/view",
+      "schedule": "manual"
+    }
+  ]
+}

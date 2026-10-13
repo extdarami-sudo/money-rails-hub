@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<!-- Proyecto: Cash Hub | Generado: 2026-05-15 | Datos: dashboards campañas CI/CO MLM 2026 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Cash Hub — Campañas Money Rails</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --accent: #3483FA;
+  --capi:   #434CE4;
+  --exp:    #7A3FEB;
+  --aware:  #F23D4F;
+  --econ:   #00A650;
+  --bg:     #FBFAF6;
+  --card:   #FFFFFF;
+  --border: #1A1A1A;
+  --dim:    #EEEEEE;
+  --fg:     #1A1A1A;
+  --fg2:    #666666;
+  --fg3:    #999999;
+  --font:   'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  min-height: 100%;
+  background: var(--bg);
+  font-family: var(--font);
+  color: var(--fg);
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+
+/* Full-viewport background blobs — fixed so they bleed past the centered content */
+.bg-blob {
+  position: fixed; border-radius: 9999px; pointer-events: none; z-index: 0;
+}
+.bg-blob-1 {
+  left: -60px; top: 240px; width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(67,76,228,0.07), transparent 70%);
+  animation: drift1 18s ease-in-out infinite;
+}
+.bg-blob-2 {
+  right: -60px; top: 480px; width: 380px; height: 380px;
+  background: radial-gradient(circle, rgba(255,230,0,0.18), transparent 70%);
+  animation: drift2 22s ease-in-out infinite;
+}
+@keyframes drift1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(30px,-20px)} }
+@keyframes drift2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-30px,20px)} }
+
+/* Content wrapper — centered, no overflow clipping */
+.page { max-width: 1280px; margin: 0 auto; position: relative; z-index: 1; }
+
+/* ── HEADER ─────────────────────────────────────────────────────────────── */
+header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 28px 56px;
+}
+.logo { display: flex; align-items: center; gap: 16px; }
+.logo-chip {
+  width: 30px; height: 30px; border-radius: 8px; background: #FFE600;
+  display: grid; place-items: center; flex-shrink: 0;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06);
+}
+.logo-divider { width: 1px; height: 22px; background: var(--dim); }
+.logo-hub { font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+nav { display: flex; gap: 28px; }
+nav a { font-size: 13px; font-weight: 500; color: var(--fg2); transition: color 150ms; }
+nav a:hover { color: var(--fg); }
+
+/* ── HERO ────────────────────────────────────────────────────────────────── */
+.hero {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  padding: 48px 56px 52px; gap: 48px;
+}
+.hero-text { max-width: 560px; flex-shrink: 0; }
+.hero-eyebrow {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
+}
+.hero-eyebrow-label {
+  font-size: 12px; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--accent);
+}
+.hero-eyebrow-line { width: 28px; height: 1px; background: var(--accent); }
+.hero-eyebrow-date { font-size: 12px; color: var(--fg3); }
+h1 {
+  font-size: clamp(56px, 6.875vw, 88px); line-height: 1;
+  font-weight: 800; letter-spacing: -0.04em; text-transform: lowercase;
+}
+.h1-sep    { color: var(--fg3); font-weight: 600; }
+.h1-accent { color: var(--accent); }
+.hero-sub { font-size: 16px; line-height: 1.5; color: var(--fg2); margin-top: 20px; }
+.hero-gif {
+  flex-shrink: 0; align-self: center;
+  animation: bob 3.4s ease-in-out infinite;
+}
+.hero-gif img { display: block; width: clamp(160px, 17vw, 230px); height: auto; }
+@keyframes bob {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-14px); }
+}
+
+/* ── ROADMAP ─────────────────────────────────────────────────────────────── */
+.section { padding: 8px 56px 56px; }
+.section-header {
+  display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 20px;
+}
+.section-title {
+  font-size: clamp(28px, 2.8vw, 36px); font-weight: 800;
+  letter-spacing: -0.02em; text-transform: lowercase;
+}
+.section-title-muted { color: var(--fg3); font-weight: 600; }
+.section-meta { font-size: 12px; color: var(--fg3); }
+
+.rmap-card {
+  background: var(--card); border: 1.5px solid var(--border);
+  border-radius: 18px; padding: 20px 24px 28px; position: relative;
+  overflow: visible;
+}
+.rmap-week-row {
+  display: flex; padding-left: 130px; padding-bottom: 12px;
+  position: relative; z-index: 1;
+}
+.rmap-week-cell { flex: 1; position: relative; }
+.rmap-month-label {
+  position: absolute; top: -14px; left: 0;
+  font-size: 10px; font-weight: 800; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--fg3);
+}
+.rmap-day { font-size: 12px; font-weight: 700; color: var(--fg2); font-variant-numeric: tabular-nums; }
+.rmap-day.is-today { color: var(--fg); }
+
+.rmap-grid-lines {
+  position: absolute; left: calc(24px + 130px); right: 24px;
+  top: 32px; bottom: 28px; display: flex; pointer-events: none; z-index: 0;
+}
+.rmap-grid-line { flex: 1; border-left: 1px dashed var(--dim); }
+.rmap-grid-line:first-child { border-left: none; }
+
+.rmap-now {
+  position: absolute; top: 28px; bottom: 28px; width: 0;
+  border-left: 2px dashed rgba(26,26,26,0.4);
+  pointer-events: none; z-index: 4;
+}
+.rmap-now-chip {
+  position: absolute; top: -4px; left: -22px;
+  background: var(--fg); color: #fff;
+  font-size: 10px; font-weight: 800; padding: 3px 10px;
+  border-radius: 9999px; text-transform: uppercase; letter-spacing: 0.08em;
+}
+
+.rmap-rails { margin-top: 8px; display: flex; flex-direction: column; gap: 4px; position: relative; z-index: 1; }
+.rmap-rail { display: flex; align-items: center; height: 88px; }
+.rmap-rail-label {
+  width: 130px; padding-right: 12px; flex-shrink: 0;
+  display: flex; align-items: center; gap: 8px;
+}
+.rail-dot { width: 10px; height: 10px; border-radius: 9999px; flex-shrink: 0; }
+.rail-name { font-size: 13px; font-weight: 700; }
+.rmap-rail-track { position: relative; flex: 1; height: 88px; }
+.rail-bar {
+  position: absolute; top: 40px; left: 0; right: 0; height: 8px;
+  border-radius: 9999px;
+}
+.station {
+  position: absolute; top: 33px; transform: translateX(-50%); z-index: 2;
+}
+.station-dot {
+  width: 22px; height: 22px; border-radius: 9999px;
+  background: var(--card); border-width: 3.5px; border-style: solid;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+.station-chip {
+  position: absolute; left: 50%; transform: translateX(-50%);
+  font-size: 10px; font-weight: 600; color: var(--fg);
+  white-space: nowrap; background: var(--card);
+  border-width: 1.5px; border-style: solid;
+  border-radius: 8px; padding: 3px 8px; line-height: 1.3;
+}
+.station-chip.above { bottom: 26px; }
+.station-chip.below { top:    26px; }
+
+/* ── DASHBOARDS ──────────────────────────────────────────────────────────── */
+.dash-header {
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;
+}
+.dash-title { font-size: clamp(28px, 2.8vw, 36px); font-weight: 800; letter-spacing: -0.02em; }
+.dash-title em { font-style: italic; color: var(--fg3); font-weight: 600; }
+.filters { display: flex; gap: 6px; align-items: center; }
+.filter-label { font-size: 12px; color: var(--fg3); margin-right: 4px; }
+.filter-btn {
+  padding: 6px 14px; border-radius: 9999px;
+  border: 1.5px solid transparent; background: transparent;
+  color: var(--fg2); font-size: 13px; font-weight: 600;
+  cursor: pointer; font-family: var(--font); transition: all 120ms;
+}
+.filter-btn.active { border-color: var(--fg); background: var(--fg); color: #fff; }
+.filter-btn:not(.active):hover { border-color: var(--dim); background: var(--card); }
+.filter-sep { width: 1px; height: 20px; background: var(--dim); margin: 0 4px; }
+.filter-dot { width: 6px; height: 6px; border-radius: 9999px; display: inline-block; margin-right: 5px; vertical-align: middle; }
+.dot-live  { background: #00A650; }
+.dot-dev   { background: #FFB800; }
+.dot-pilot { background: #434CE4; }
+
+/* Decorative train rail */
+.train-strip {
+  position: relative; height: 68px; margin: 16px 0 4px; overflow: hidden;
+}
+.train-track {
+  position: absolute; left: 0; right: 0; top: 54px;
+  height: 2px; background: var(--fg); opacity: 0.5; border-radius: 9999px;
+}
+.train-sleepers {
+  position: absolute; left: 0; right: 0; top: 58px; height: 6px;
+  background-image: repeating-linear-gradient(90deg, #B3B3B3 0 2px, transparent 2px 20px);
+}
+.train-engine {
+  position: absolute; top: 4px; left: -100px;
+  animation: chug 14s linear infinite;
+  will-change: transform;
+}
+@keyframes chug {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(1500px); }
+}
+
+/* Cards */
+.cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 20px; }
+
+/* Pagination */
+.pagination {
+  display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 36px;
+}
+.page-btn {
+  padding: 8px 20px; border-radius: 9999px;
+  border: 1.5px solid var(--border); background: var(--card);
+  color: var(--fg); font-size: 13px; font-weight: 600;
+  cursor: pointer; font-family: var(--font); transition: all 120ms;
+}
+.page-btn:hover:not(:disabled) { background: var(--fg); color: #fff; }
+.page-btn:disabled { border-color: var(--dim); color: var(--fg3); cursor: default; }
+.page-info { font-size: 13px; font-weight: 600; color: var(--fg2); min-width: 100px; text-align: center; }
+.dash-card {
+  background: var(--card); border: 1.5px solid var(--border);
+  border-radius: 18px; padding: 24px;
+  display: flex; flex-direction: column; gap: 16px;
+  cursor: pointer; min-height: 240px;
+  transition: transform 220ms cubic-bezier(0.2,0.7,0.3,1), box-shadow 220ms;
+}
+.card-top { display: flex; align-items: flex-start; justify-content: space-between; }
+.card-icon {
+  width: 64px; height: 64px; border-radius: 14px; color: #fff;
+  display: grid; place-items: center; flex-shrink: 0;
+}
+.card-body { flex: 1; }
+.card-title { font-size: 20px; font-weight: 800; letter-spacing: -0.01em; }
+.card-desc { font-size: 13px; line-height: 1.5; color: var(--fg2); margin-top: 8px; }
+.card-footer {
+  margin-top: auto; display: flex; align-items: center; justify-content: space-between;
+  padding-top: 14px; border-top: 1px dashed var(--dim);
+}
+.card-pillar { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+.pillar-dot { width: 8px; height: 8px; border-radius: 9999px; }
+.card-open { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 700; color: var(--accent); }
+
+/* Pills */
+.pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 9999px; font-size: 12px; font-weight: 600; line-height: 1; white-space: nowrap; }
+.pill-dot { width: 6px; height: 6px; border-radius: 9999px; flex-shrink: 0; }
+.pill-live  { background:rgba(0,166,80,0.10);  color:#00873F; }
+.pill-live .pill-dot { background:#00A650; animation: pulse 1.6s ease-in-out infinite; }
+.pill-dev   { background:rgba(255,184,0,0.14); color:#8A6500; }
+.pill-dev .pill-dot { background:#FFB800; }
+.pill-pilot { background:rgba(67,76,228,0.10); color:#434CE4; }
+.pill-pilot .pill-dot { background:#434CE4; }
+@keyframes pulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(0,166,80,0.35); }
+  50%      { box-shadow: 0 0 0 5px rgba(0,166,80,0); }
+}
+
+/* ── FOOTER ──────────────────────────────────────────────────────────────── */
+footer {
+  padding: 36px 56px 40px; border-top: 1.5px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between; margin-top: 16px;
+}
+.footer-left { display: flex; align-items: center; gap: 14px; }
+.footer-divider { width: 1px; height: 18px; background: var(--dim); }
+.footer-meta { font-size: 11px; color: var(--fg3); }
+.footer-links { display: flex; gap: 22px; font-size: 12px; font-weight: 500; color: var(--fg2); }
+.footer-links a:hover { color: var(--fg); }
+
+/* ── RESPONSIVE ──────────────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .cards-grid { grid-template-columns: repeat(2, 1fr); }
+  .hero { flex-direction: column; align-items: flex-start; }
+  .hero-gif { align-self: center; }
+}
+@media (max-width: 640px) {
+  header, .hero, .section, footer { padding-left: 24px; padding-right: 24px; }
+  .cards-grid { grid-template-columns: 1fr; }
+  h1 { font-size: 48px; }
+}
+</style>
+</head>
+<body>
+
+<!-- viewport-wide background blobs (position: fixed, not clipped by content) -->
+<div class="bg-blob bg-blob-1"></div>
+<div class="bg-blob bg-blob-2"></div>
+
+<div class="page">
+
+  <!-- ── HEADER ── -->
+  <header>
+    <div class="logo">
+      <div class="logo-chip">
+        <svg width="18" height="12" viewBox="0 0 24 16">
+          <path d="M2 11 Q 12 1 22 11" stroke="#1A1A1A" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+          <circle cx="12" cy="8" r="2.4" fill="#1A1A1A"/>
+        </svg>
+      </div>
+      <span style="font-size:14px;font-weight:700;letter-spacing:0.01em">mercado<span style="font-weight:400">pago</span></span>
+      <div class="logo-divider"></div>
+      <span class="logo-hub">Cash · Hub</span>
+    </div>
+    <nav>
+      <a href="#dashboards">Dashboards</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="mailto:ext_darami@mercadolibre.com.mx">Equipo</a>
+      <a href="https://github.com/extdarami-sudo/money-rails-hub" target="_blank" rel="noopener">Changelog</a>
+    </nav>
+  </header>
+
+  <!-- ── HERO ── -->
+  <section class="hero">
+    <div class="hero-text">
+      <div class="hero-eyebrow">
+        <span class="hero-eyebrow-label">Cash · CI / CO · MLM</span>
+        <span class="hero-eyebrow-line"></span>
+        <span class="hero-eyebrow-date">Mayo 2026</span>
+      </div>
+      <h1>campañas <span class="h1-sep">·</span> <span class="h1-accent">money rails</span></h1>
+      <p class="hero-sub">Dashboards de iniciativas Cash-in / Cash-out · Mercado Pago México.</p>
+    </div>
+    <div class="hero-gif">
+      <img src="minecart.gif" alt="" width="220">
+    </div>
+  </section>
+
+  <!-- ── ROADMAP ── -->
+  <section class="section" id="roadmap">
+    <div class="section-header">
+      <h2 class="section-title">la ruta <span class="section-title-muted">/ las próximas 12 semanas</span></h2>
+      <span class="section-meta">May 11 — Ago 02 · 14 iniciativas</span>
+    </div>
+    <div class="rmap-card" id="rmap"></div>
+  </section>
+
+  <!-- ── DASHBOARDS ── -->
+  <section class="section" id="dashboards">
+    <div class="dash-header">
+      <h2 class="dash-title">Los dashboards <em>—</em></h2>
+      <div class="filters">
+        <span class="filter-label">Filtrar:</span>
+        <button class="filter-btn active" onclick="setFilter('todos',this)">Todos</button>
+        <button class="filter-btn" onclick="setFilter('ci',this)">CI</button>
+        <button class="filter-btn" onclick="setFilter('co',this)">CO</button>
+        <button class="filter-btn" onclick="setFilter('campanas',this)">Campañas</button>
+        <span class="filter-sep"></span>
+        <button class="filter-btn filter-status" onclick="setFilter('live',this)"><span class="filter-dot dot-live"></span>En vivo</button>
+        <button class="filter-btn filter-status" onclick="setFilter('dev',this)"><span class="filter-dot dot-dev"></span>En desarrollo</button>
+        <button class="filter-btn filter-status" onclick="setFilter('pilot',this)"><span class="filter-dot dot-pilot"></span>En pilot</button>
+      </div>
+    </div>
+
+    <!-- decorative train -->
+    <div class="train-strip">
+      <div class="train-track"></div>
+      <div class="train-sleepers"></div>
+      <div class="train-engine">
+        <svg viewBox="0 0 32 32" width="58" height="58" style="display:block">
+          <path d="M2 27.5h28" fill="none" stroke="#3483FA" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect x="4" y="14" width="15" height="10" rx="1.5" fill="none" stroke="#3483FA" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect x="6" y="16" width="5" height="5" rx="0.8" fill="none" stroke="#3483FA" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect x="19" y="16" width="9" height="8" rx="1" fill="none" stroke="#3483FA" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="24" cy="20" r="1.6" fill="none" stroke="#3483FA" stroke-width="1.6"/>
+          <path d="M21 16v-3.5h3V16" fill="none" stroke="#3483FA" stroke-width="1.6" stroke-linecap="round"/>
+          <circle cx="20" cy="9" r="1.4" fill="none" stroke="#3483FA" stroke-width="1.6"/>
+          <circle cx="24" cy="6.5" r="1.8" fill="none" stroke="#3483FA" stroke-width="1.6"/>
+          <circle cx="27.5" cy="9.5" r="1.4" fill="none" stroke="#3483FA" stroke-width="1.6"/>
+          <circle cx="8" cy="25.5" r="1.8" fill="none" stroke="#3483FA" stroke-width="1.6"/>
+          <circle cx="15" cy="25.5" r="1.8" fill="none" stroke="#3483FA" stroke-width="1.6"/>
+          <circle cx="23" cy="25.5" r="1.8" fill="none" stroke="#3483FA" stroke-width="1.6"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="cards-grid" id="grid"></div>
+    <div class="pagination" id="pagination"></div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <div class="footer-left">
+      <div class="logo-chip" style="width:26px;height:26px;border-radius:6px">
+        <svg width="16" height="11" viewBox="0 0 24 16">
+          <path d="M2 11 Q 12 1 22 11" stroke="#1A1A1A" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+          <circle cx="12" cy="8" r="2.4" fill="#1A1A1A"/>
+        </svg>
+      </div>
+      <div class="footer-divider"></div>
+      <span class="footer-meta">Cash Hub · v1.0 · 2026-05-15</span>
+    </div>
+    <div class="footer-links">
+      <a href="https://mercadolibre.enterprise.slack.com/archives/cash-mlm" target="_blank" rel="noopener">#cash-mlm</a>
+      <a href="mailto:ext_darami@mercadolibre.com.mx">Sugerir un dashboard →</a>
+    </div>
+  </footer>
+
+</div><!-- .page -->
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────────
+
+const PILLARS = {
+  capi:  { color: '#434CE4', label: 'Capilaridad' },
+  exp:   { color: '#7A3FEB', label: 'Experiencia'  },
+  aware: { color: '#F23D4F', label: 'Awareness'    },
+  econ:  { color: '#00A650', label: 'Economics'    },
+};
+
+// Las tarjetas viven en dashboards.json (manifiesto externo) y se cargan en el INIT.
+// NO edites este array a mano: la skill publicar-dashboard agrega entradas validadas
+// directamente al JSON. Mantener los datos fuera de este archivo evita que un cambio
+// accidental rompa la página pública del hub.
+let DASHBOARDS = [];
+
+// 12-week roadmap (May 11 – Aug 02, 2026). "Hoy" = May 14 = 3/7 into week 0.
+const WEEKS = 12;
+const NOW_FRAC = 3 / 7;
+const WEEK_LABELS = [
+  {d:'11',m:'May'},{d:'18',m:null},{d:'25',m:null},
+  {d:'01',m:'Jun'},{d:'08',m:null},{d:'15',m:null},
+  {d:'22',m:null},{d:'29',m:null},
+  {d:'06',m:'Jul'},{d:'13',m:null},{d:'20',m:null},{d:'27',m:null},
+];
+const RAILS = [
+  { id:'capi', stops:[
+    {w:0, label:'ATM banking · ajuste TDF', up:false},
+    {w:3, label:'Pre-encendido Oxxo',       up:true },
+    {w:7, label:'Conexión directa Oxxo',    up:false},
+    {w:10,label:'Sandbox 3B',               up:true },
+  ]},
+  { id:'exp', stops:[
+    {w:1, label:'Restyling roll-out',       up:true },
+    {w:5, label:'Convivencia retiro',       up:false},
+    {w:9, label:'Mapa CI · nuevos filtros', up:true },
+  ]},
+  { id:'aware', stops:[
+    {w:2, label:'Camp. ATM · cashback',     up:false},
+    {w:4, label:'Journeys newbies M0',      up:true },
+    {w:6, label:'Geo-camp Express',         up:false},
+    {w:9, label:'Maxwell código de barras', up:true },
+  ]},
+  { id:'econ', stops:[
+    {w:1, label:'Renegociar agregador A',   up:true },
+    {w:6, label:'Devoluciones NRT',         up:false},
+    {w:11,label:'Análisis costos Oxxo',     up:true },
+  ]},
+];
+
+// ── MOTIF SVGs ────────────────────────────────────────────────────────────────
+
+function motif(kind, sz, col='currentColor') {
+  const a = `fill="none" stroke="${col}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"`;
+  const v = `viewBox="0 0 32 32" width="${sz}" height="${sz}" style="display:block"`;
+  switch(kind) {
+    case 'atm':      return `<svg ${v}><rect x="5" y="4" width="22" height="20" rx="2.5" ${a}/><rect x="8" y="7" width="16" height="6" rx="1" ${a}/><path d="M9 16h6M9 19h4" ${a}/><rect x="18" y="15" width="6" height="5" rx="1" ${a}/><path d="M11 24v3M21 24v3M8 28h16" ${a}/></svg>`;
+    case 'oxxo':     return `<svg ${v}><path d="M6 11h20l-1.5 14a2 2 0 0 1-2 1.8H9.5a2 2 0 0 1-2-1.8L6 11Z" ${a}/><path d="M10 11V7a6 6 0 0 1 12 0v4" ${a}/><path d="M11 16h10M11 20h7" ${a}/></svg>`;
+    case 'megaphone':return `<svg ${v}><path d="M5 13v6l16 6V7L5 13Z" ${a}/><path d="M21 11c2 1 3 2.5 3 5s-1 4-3 5" ${a}/><path d="M9 19v4a2 2 0 0 0 4 0v-2" ${a}/></svg>`;
+    case 'smile':    return `<svg ${v}><circle cx="16" cy="16" r="11" ${a}/><circle cx="12" cy="14" r="1.2" fill="${col}" stroke="none"/><circle cx="20" cy="14" r="1.2" fill="${col}" stroke="none"/><path d="M11 19c1.4 2 3 3 5 3s3.6-1 5-3" ${a}/></svg>`;
+    case 'shop':     return `<svg ${v}><path d="M6 12l1.5-5h17L26 12" ${a}/><path d="M6 12v14h20V12" ${a}/><path d="M6 12c0 2 1.5 3 3 3s3-1 3-3M12 12c0 2 1.5 3 3 3s3-1 3-3M18 12c0 2 1.5 3 3 3s3-1 3-3" ${a}/><path d="M13 26v-7h6v7" ${a}/></svg>`;
+    case 'coins':    return `<svg ${v}><ellipse cx="12" cy="10" rx="7" ry="3" ${a}/><path d="M5 10v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6" ${a}/><path d="M5 16v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6" ${a}/><ellipse cx="22" cy="22" rx="6" ry="2.6" ${a}/></svg>`;
+    default: return '';
+  }
+}
+
+// ── RENDER ROADMAP ────────────────────────────────────────────────────────────
+
+function buildRoadmap() {
+  const LW = 130; // label width px
+  let h = '';
+
+  // Week header
+  h += `<div class="rmap-week-row">`;
+  WEEK_LABELS.forEach((wk, i) => {
+    h += `<div class="rmap-week-cell">`;
+    if (wk.m) h += `<div class="rmap-month-label">${wk.m}</div>`;
+    h += `<div class="rmap-day${i===0?' is-today':''}">${wk.d}</div></div>`;
+  });
+  h += `</div>`;
+
+  // Grid lines overlay
+  h += `<div class="rmap-grid-lines">` + Array.from({length:WEEKS}, () => `<div class="rmap-grid-line"></div>`).join('') + `</div>`;
+
+  // "Hoy" marker (positioned by JS after paint)
+  h += `<div class="rmap-now" id="rmap-now"><div class="rmap-now-chip">Hoy</div></div>`;
+
+  // Rails
+  h += `<div class="rmap-rails">`;
+  RAILS.forEach(r => {
+    const p = PILLARS[r.id];
+    h += `<div class="rmap-rail">
+      <div class="rmap-rail-label">
+        <span class="rail-dot" style="background:${p.color}"></span>
+        <span class="rail-name">${p.label}</span>
+      </div>
+      <div class="rmap-rail-track">
+        <div class="rail-bar" style="background:${p.color}"></div>`;
+    r.stops.forEach(s => {
+      const left = ((s.w + 0.5) / WEEKS * 100).toFixed(2);
+      h += `<div class="station" style="left:${left}%">
+        <div class="station-dot" style="border-color:${p.color}"></div>
+        <div class="station-chip ${s.up?'above':'below'}" style="border-color:${p.color}">${s.label}</div>
+      </div>`;
+    });
+    h += `</div></div>`;
+  });
+  h += `</div>`;
+
+  document.getElementById('rmap').innerHTML = h;
+
+  // Position "Hoy" line once layout is known
+  requestAnimationFrame(() => {
+    const card  = document.getElementById('rmap');
+    const nowEl = document.getElementById('rmap-now');
+    if (!card || !nowEl) return;
+    const W = card.clientWidth;
+    const trackW = W - 48 - LW;
+    nowEl.style.left = (24 + LW + trackW * (NOW_FRAC / WEEKS)) + 'px';
+  });
+}
+
+// ── RENDER CARDS + PAGINATION ─────────────────────────────────────────────────
+
+const PAGE_SIZE = 6;
+let currentFilter = 'todos';
+let currentPage   = 1;
+
+const STATUS_FILTERS = new Set(['live', 'dev', 'pilot']);
+
+function filteredSorted(filter) {
+  let list;
+  if (filter === 'todos')               list = DASHBOARDS;
+  else if (STATUS_FILTERS.has(filter))  list = DASHBOARDS.filter(d => d.status === filter);
+  else                                  list = DASHBOARDS.filter(d => d.tags.includes(filter));
+  return [...list].sort((a, b) => new Date(b.added) - new Date(a.added));
+}
+
+function buildCards(filter, page) {
+  currentFilter = filter;
+  currentPage   = page;
+
+  const all      = filteredSorted(filter);
+  const pages    = Math.max(1, Math.ceil(all.length / PAGE_SIZE));
+  const safePage = Math.min(page, pages);
+  const slice    = all.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+
+  document.getElementById('grid').innerHTML = slice.map((d, i) => {
+    const p    = PILLARS[d.pillar];
+    const tilt = i % 2 === 0 ? -1.2 : 1.2;
+    const tag  = d.url ? 'a' : 'div';
+    const attrs = d.url ? `href="${d.url}" target="_blank" rel="noopener"` : `style="cursor:default"`;
+    return `<${tag} class="dash-card" ${attrs}
+        onmouseenter="this.style.transform='translateY(-4px) rotate(${tilt}deg)';this.style.boxShadow='8px 8px 0 0 ${p.color}'"
+        onmouseleave="this.style.transform='';this.style.boxShadow=''">
+      <div class="card-top">
+        <div class="card-icon" style="background:${p.color}">${motif(d.motif, 40, '#fff')}</div>
+        <span class="pill pill-${d.status}"><span class="pill-dot"></span>${d.statusLabel}</span>
+      </div>
+      <div class="card-body">
+        <div class="card-title">${d.title}</div>
+        <div class="card-desc">${d.desc}</div>
+      </div>
+      <div class="card-footer">
+        <div class="card-pillar">
+          <span class="pillar-dot" style="background:${p.color}"></span>
+          <span style="color:${p.color}">${p.label}</span>
+          <span style="color:#999">·</span>
+          <span style="color:#999">${d.quarter}</span>
+        </div>
+        <span class="card-open">
+          ${d.url
+            ? `Abrir <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m9 18 6-6-6-6"/></svg>`
+            : `<span style="color:#999;font-weight:600;font-size:11px">Próximamente</span>`}
+        </span>
+      </div>
+    </${tag}>`;
+  }).join('');
+
+  // Pagination controls — hidden when everything fits on one page
+  const pag = document.getElementById('pagination');
+  if (pages <= 1) { pag.innerHTML = ''; return; }
+  pag.innerHTML = `
+    <button class="page-btn" onclick="changePage(${safePage - 1})" ${safePage === 1 ? 'disabled' : ''}>← Anterior</button>
+    <span class="page-info">Página ${safePage} de ${pages}</span>
+    <button class="page-btn" onclick="changePage(${safePage + 1})" ${safePage === pages ? 'disabled' : ''}>Siguiente →</button>`;
+}
+
+function changePage(p) {
+  buildCards(currentFilter, p);
+  document.getElementById('dashboards').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function setFilter(f, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  buildCards(f, 1);
+}
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+// El roadmap no depende del manifiesto, se pinta de inmediato.
+buildRoadmap();
+
+// Las tarjetas se cargan desde dashboards.json (mismo origen que la página en Pages).
+// Si el fetch falla, el resto de la página (header, hero, roadmap, footer) sigue intacto.
+fetch('dashboards.json', { cache: 'no-store' })
+  .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+  .then(data => {
+    DASHBOARDS = Array.isArray(data) ? data : (data.dashboards || []);
+    buildCards('todos', 1);
+  })
+  .catch(err => {
+    console.error('No se pudo cargar dashboards.json:', err);
+    document.getElementById('grid').innerHTML =
+      '<div style="grid-column:1/-1;padding:48px;text-align:center;color:var(--fg3);font-size:14px">' +
+      'No se pudieron cargar los dashboards. Recarga la página o avisa en #cash-mlm.</div>';
+  });
+</script>
+</body>
+</html>

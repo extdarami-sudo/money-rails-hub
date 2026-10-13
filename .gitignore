@@ -1,0 +1,18 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Este repo es PÚBLICO y sirve la página de GitHub Pages del Cash Hub.
+# Los dashboards se alojan en Grid (privado, MELI), NO aquí. Estas reglas evitan
+# que se suba por error un dashboard o un .sql con datos/tablas internas.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Dashboards (van a Grid, no al repo público)
+*_dashboard.html
+
+# Queries (nombres de tablas internas no deben quedar en un repo público)
+*.sql
+
+# Registros locales del cron (si alguien guarda una variante con queries)
+refresh/*.local.json
+
+# Basura del sistema
+.DS_Store
+Thumbs.db

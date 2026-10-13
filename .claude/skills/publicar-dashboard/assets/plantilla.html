@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>[NOMBRE DEL DASHBOARD]</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<!--
+  Gráficas con ApexCharts vía CDN. Está probado que funciona dentro de Grid.
+  Si prefieres otra librería, Grid trae varias en /d/_libs/ (Chart.js, Plotly, D3, etc.).
+-->
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@latest/dist/apexcharts.min.js"></script>
+<style>
+  /* ─────────────────────────────────────────────────────────────────────────
+     ESTÉTICA LIBRE. Estos colores/tipografía son solo un punto de partida con
+     la identidad de Money Rails. Cámbialos según lo que tu dashboard necesite:
+     el único requisito del Cash Hub es la estructura de 3 bloques del <script>,
+     no cómo se ve.
+     ───────────────────────────────────────────────────────────────────────── */
+  :root {
+    --bg:             #0D1B2A;
+    --card:           #1A2940;
+    --border:         #2D3E52;
+    --accent-yellow:  #FFE600;
+    --accent-blue:    #2D3277;
+    --text-primary:   #F8FAFC;
+    --text-secondary: #94A3B8;
+    --positive:       #22C55E;
+    --negative:       #EF4444;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text-primary); font-family: 'Inter', sans-serif; padding: 24px; min-height: 100vh; }
+  header { margin-bottom: 24px; }
+  header h1 { font-size: 22px; font-weight: 700; }
+  header h1 span { color: var(--accent-yellow); }
+  header p { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 20px; }
+  .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; grid-column: 1 / -1; margin-bottom: 4px; }
+  .full { grid-column: 1 / -1; }
+  .kpi-card { background: var(--card); border: 1px solid var(--border); border-left: 3px solid var(--accent-yellow); border-radius: 8px; padding: 16px 18px; }
+  .kpi-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary); margin-bottom: 6px; }
+  .kpi-value { font-size: 28px; font-weight: 700; }
+  .kpi-sub { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 20px 22px; }
+  .card h3 { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary); margin-bottom: 16px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead th { background: var(--border); color: var(--text-secondary); padding: 10px 12px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+  tbody td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text-primary); }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+
+<!-- Proyecto: [nombre] | Generado: [YYYY-MM-DD] | Datos: [tabla/ventana temporal] -->
+
+<header>
+  <h1>[Nombre del dashboard] <span>— Money Rails</span></h1>
+  <p>[Una línea de contexto: período, campaña, qué mide]</p>
+</header>
+
+<!--
+  CONTENEDORES — van ANTES del <script>. El BLOQUE 3 (RENDER) hace document.getElementById(...)
+  sobre estos IDs, así que deben existir en el DOM cuando corre el script. Si pones el <script>
+  antes que estos divs, getElementById devuelve null y el dashboard sale COMPLETAMENTE VACÍO.
+  Puedes rediseñar el HTML libremente, pero (1) conserva los IDs que el RENDER usa
+  (kpi-row, chart-serie, tabla-detalle) y (2) mantén el <script> después de los contenedores.
+-->
+<div class="grid">
+  <div class="kpi-row" id="kpi-row"></div>
+  <div class="card full"><h3>Serie diaria</h3><div id="chart-serie"></div></div>
+  <div class="card full"><h3>Detalle por segmento</h3><table id="tabla-detalle"></table></div>
+</div>
+
+<script>
+// ╔════════════════════════════════════════════════════════════════════════╗
+// ║  BLOQUE 1 — DASHBOARD_META                                              ║
+// ║  Especifica QUÉ queries actualizan este dashboard. No cambia en cada    ║
+// ║  actualización. El cron del Cash Hub lee este bloque desde el doc de    ║
+// ║  Grid para refrescar los datos automáticamente.                         ║
+// ╚════════════════════════════════════════════════════════════════════════╝
+const DASHBOARD_META = {
+  version: "1",
+  proyecto: "[Nombre del dashboard]",
+  // ventana.tipo: "mes_actual" | "rolling" (con dias) | "fijo" (con fechas) | "post_campana"
+  ventana: { tipo: "rolling", dias: 30 },
+  ultima_actualizacion: "[YYYY-MM-DD]",
+  queries: [
+    {
+      id: "serie_diaria",   // <- debe coincidir con la llave en DATA
+      descripcion: "Ejemplo: conteo diario de la métrica principal",
+      sql: /* sql */ `
+        SELECT
+          FORMAT_DATE('%d %b', DATE(TU_COLUMNA_FECHA)) AS fecha,
+          COUNT(*)                                     AS valor
+        FROM \`meli-bi-data.DATASET.TU_TABLA\`
+        WHERE TU_COLUMNA_FECHA BETWEEN '{{fecha_inicio}}' AND '{{fecha_fin}}'
+          AND SIT_SITE_ID = 'MLM'
+        GROUP BY 1
+        ORDER BY 1
+      `,
+      notas: "Usa {{fecha_inicio}} y {{fecha_fin}}; el cron los sustituye según ventana."
+    }
+  ]
+};
+
+// ╔════════════════════════════════════════════════════════════════════════╗
+// ║  BLOQUE 2 — DATA                                                        ║
+// ║  Última actualización: [YYYY-MM-DD]                                     ║
+// ║  ESTE es el único bloque que cambia al actualizar. Las llaves de        ║
+// ║  primer nivel coinciden con los 'id' de las queries de arriba.          ║
+// ╚════════════════════════════════════════════════════════════════════════╝
+const DATA = {
+  // KPIs planos (ponlos donde te sirvan)
+  kpis: { total: 12450, tasa: 0.083, delta_pct: 4.2 },
+  // Resultado de la query "serie_diaria"
+  serie_diaria: {
+    labels: ['01 May', '02 May', '03 May', '04 May', '05 May', '06 May', '07 May'],
+    valor:  [1620, 1710, 1580, 1890, 2010, 1760, 1880],
+  },
+  // Filas para una tabla de detalle
+  detalle: [
+    { segmento: 'Segmento A', usuarios: 5400, conversion: 0.091 },
+    { segmento: 'Segmento B', usuarios: 4300, conversion: 0.078 },
+    { segmento: 'Segmento C', usuarios: 2750, conversion: 0.069 },
+  ],
+};
+
+// ╔════════════════════════════════════════════════════════════════════════╗
+// ║  BLOQUE 3 — RENDER                                                      ║
+// ║  Gráficas y tablas. Lee EXCLUSIVAMENTE de DATA.* — nunca números        ║
+// ║  hardcodeados. Así, actualizar = reemplazar solo el BLOQUE 2.           ║
+// ╚════════════════════════════════════════════════════════════════════════╝
+
+// Config base de ApexCharts (se esparce en cada gráfica).
+const BASE = {
+  chart:  { fontFamily: 'Inter, sans-serif', background: 'transparent', toolbar: { show: false }, animations: { enabled: false } },
+  theme:  { mode: 'dark' },
+  colors: ['#FFE600', '#2D3277', '#22C55E', '#EF4444', '#94A3B8', '#38BDF8'],
+  grid:   { borderColor: '#2D3E52', strokeDashArray: 4 },
+  tooltip:{ theme: 'dark' },
+  xaxis:  { labels: { style: { colors: '#94A3B8', fontSize: '12px' } }, axisBorder: { show: false } },
+  yaxis:  { labels: { style: { colors: '#94A3B8', fontSize: '12px' } } },
+};
+
+const fNum = v => new Intl.NumberFormat('es-MX').format(v);
+const fPct = v => (v * 100).toFixed(1) + '%';
+
+// KPIs
+document.getElementById('kpi-row').innerHTML = [
+  { label: 'Total', value: fNum(DATA.kpis.total), sub: 'Acumulado del período' },
+  { label: 'Tasa de conversión', value: fPct(DATA.kpis.tasa), sub: 'Sobre la base elegible' },
+  { label: 'Variación', value: (DATA.kpis.delta_pct >= 0 ? '+' : '') + DATA.kpis.delta_pct + '%', sub: 'vs período previo' },
+].map(k => `
+  <div class="kpi-card">
+    <div class="kpi-label">${k.label}</div>
+    <div class="kpi-value">${k.value}</div>
+    <div class="kpi-sub">${k.sub}</div>
+  </div>`).join('');
+
+// Gráfica de serie diaria
+new ApexCharts(document.getElementById('chart-serie'), {
+  ...BASE,
+  chart: { ...BASE.chart, type: 'area', height: 300 },
+  series: [{ name: 'Valor', data: DATA.serie_diaria.valor }],
+  xaxis: { ...BASE.xaxis, categories: DATA.serie_diaria.labels },
+  stroke: { curve: 'smooth', width: 2 },
+  fill: { type: 'gradient', gradient: { opacityFrom: 0.4, opacityTo: 0.05 } },
+  dataLabels: { enabled: false },
+}).render();
+
+// Tabla de detalle
+document.getElementById('tabla-detalle').innerHTML = `
+  <thead><tr><th>Segmento</th><th class="num">Usuarios</th><th class="num">Conversión</th></tr></thead>
+  <tbody>
+    ${DATA.detalle.map(r => `
+      <tr>
+        <td>${r.segmento}</td>
+        <td class="num">${fNum(r.usuarios)}</td>
+        <td class="num">${fPct(r.conversion)}</td>
+      </tr>`).join('')}
+  </tbody>`;
+</script>
+
+</body>
+</html>
